@@ -1,13 +1,13 @@
 import { checkAdminPermission, getAllUsers, deleteUserFromDB, updateUserRole, sendControlCommand } from "./admin.js";
 import { logoutUser } from "./dashboard.js";
 
-// 1. ตรวจสิทธิ์ Admin ตอนเข้าหน้าเว็บ
+// 1. ตรวจสิทธิ์ Admin ตอนเข้าหน้าเว็บ (คงเดิม)
 checkAdminPermission((adminData) => {
     document.getElementById("adminName").innerText = adminData.username;
     renderUserTable();
 });
 
-// 2. ฟังก์ชันวาดตารางรายชื่อสมาชิก
+// 2. 🚀 อัปเดตฟังก์ชันวาดตาราง: เพิ่มปุ่ม "ดูโปรไฟล์" เข้าไปในคอลัมน์การจัดการ
 async function renderUserTable() {
     const users = await getAllUsers();
     const tbody = document.getElementById("userTableBody");
@@ -23,12 +23,14 @@ async function renderUserTable() {
             </select>
         `;
 
+        // 📝 เพิ่มปุ่ม <button class="btn-view-profile"> สำหรับส่ง uid ไปหน้า profile.html
         tr.innerHTML = `
             <td>${user.username || 'ไม่ระบุ'}</td>
             <td>${user.email}</td>
             <td>${user.phone || '-'}</td>
             <td>${roleSelect}</td>
             <td>
+                <button class="btn-view-profile" data-uid="${user.uid}" style="background-color: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 5px;">ดูโปรไฟล์</button>
                 <button class="btn-delete" data-uid="${user.uid}">ลบสมาชิก</button>
             </td>
         `;
@@ -38,8 +40,17 @@ async function renderUserTable() {
     addTableEvents();
 }
 
-// 3. ผูก Event ภายในตาราง
+// 3. 🚀 อัปเดตการผูก Event: เพิ่มการดักฟังปุ่มกดดูโปรไฟล์
 function addTableEvents() {
+    // เหตุการณ์กดปุ่มดูโปรไฟล์
+    document.querySelectorAll(".btn-view-profile").forEach(button => {
+        button.addEventListener("click", (e) => {
+            const uid = e.target.getAttribute("data-uid");
+            // วาร์ปไปหน้าโปรไฟล์พร้อมแนบไอดีผู้ใช้คนนั้นไปด้วย
+            window.location.href = `./profile.html?uid=${uid}`;
+        });
+    });
+
     document.querySelectorAll(".role-select").forEach(select => {
         select.addEventListener("change", async (e) => {
             const uid = e.target.getAttribute("data-uid");
@@ -60,7 +71,7 @@ function addTableEvents() {
     });
 }
 
-// 4. ผูก Event ปุ่มควบคุมบอร์ด IoT
+// 4. ผูก Event ปุ่มควบคุมบอร์ด IoT (คงเดิม)
 document.getElementById("pumpOnBtn").addEventListener("click", async () => {
     const success = await sendControlCommand(true);
     if (success) { document.getElementById("controlStatus").innerText = "ส่งคำสั่ง: เปิดปั๊มน้ำสำเร็จ"; }
@@ -71,7 +82,7 @@ document.getElementById("pumpOffBtn").addEventListener("click", async () => {
     if (success) { document.getElementById("controlStatus").innerText = "ส่งคำสั่ง: ปิดปั๊มน้ำสำเร็จ"; }
 });
 
-// 5. ผูก Event ปุ่มออกจากระบบ
+// 5. ผูก Event ปุ่มออกจากระบบ (คงเดิม)
 document.getElementById("logoutBtn").addEventListener("click", () => {
     logoutUser();
 });
