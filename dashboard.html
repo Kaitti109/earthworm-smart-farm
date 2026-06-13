@@ -43,7 +43,7 @@
         <div style="display: flex; align-items: center; gap: 10px;">
             <button id="userPumpOnBtn" style="background-color: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">เปิดปั๊มน้ำ (ON)</button>
             <button id="userPumpOffBtn" style="background-color: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">ปิดปั๊มน้ำ (OFF)</button>
-            <span id="userPumpStatus" style="font-weight: 600; color: #1e293b; font-size: 14px; margin-left: 5px;"></span>
+            <span id="userPumpStatus" style="font-weight: 600; color: #1e293b; font-size: 14px; margin-left: 5px;">กำลังโหลดสถานะปั๊ม...</span>
         </div>
     </div>
 
@@ -64,44 +64,71 @@
 </div>
 
 <script type="module">
-    // 🚀 อิมพอร์ตฟังก์ชันสั่งงานอันใหม่เข้ามาร่วมทำงาน
     import { checkUserLogin, logoutUser, sendUserControlCommand } from "./src/dashboard.js";
+    // 🚀 นำเข้า rtdb และเครื่องมือดักฟังแบบเรียลไทม์จากระบบ Firebase หลัก
+    import { rtdb } from "./src/firebase.js";
+    import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // 1. ตรวจสอบสถานะการล็อกอินและแสดงข้อมูลเซนเซอร์
+    // ตัวแปรส่วนตัวสำหรับเก็บ UID ของผู้ใช้ที่กำลังล็อกอินอยู่ขณะนั้น
+    let currentLoggedUid = "";
+
+    // 1. ตรวจสอบสถานะการล็อกอินและซ่อนเมนูแอดมิน
     checkUserLogin((userData) => {
         if (userData) {
+            currentLoggedUid = userData.uid; // เก็บรหัส UID เอาไว้ใช้งานปุ่มกดด้านล่าง
             document.getElementById("userNameText").innerText = userData.username;
 
-            // 🔒 ซ่อนเมนูแอดมินบนแท็บเมนู ถ้าล็อกอินเข้ามาด้วยบัญชี User ปกติ
             if (userData.role !== "admin") {
                 document.getElementById("adminMenuBtn").style.display = "none";
             }
 
-            // ดึงค่าเซนเซอร์มาแสดงผล
-            document.getElementById("tempVal").innerText = userData.temperature !== undefined ? userData.temperature : "28.5";
-            document.getElementById("humidityVal").innerText = userData.humidity !== undefined ? userData.humidity : "75";
-            document.getElementById("phVal").innerText = userData.ph !== undefined ? userData.ph : "6.8";
+            // 🚀 2. ดักฟังค่าจาก Realtime Database เจาะจงตามโฟลเดอร์ UID ของตัวเอง
+            const currentSensorRef = ref(rtdb, `users_farms/${userData.uid}/current`);
+            
+            onValue(currentSensorRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // นำข้อมูลจริงจากบอร์ดที่ส่งขึ้นโฟลเดอร์ของตัวเองมาโชว์แบบเรียลไทม์
+                    document.getElementById("tempVal").innerText = data.temp !== undefined ? data.temp.toFixed(1) : "28.5";
+                    document.getElementById("humidityVal").innerText = data.moist !== undefined ? data.moist.toFixed(1) : "75";
+                    
+                    // ระบบทดสอบค่า pH สมมติ (หากบอร์ดไม่ได้ต่อเซนเซอร์ pH ไว้)
+                    document.getElementById("phVal").innerText = data.ph !== undefined ? data.ph : "6.8";
+
+                    // แสดงสถานะที่บอร์ดตอบกลับมาจริง
+                    const statusText = document.getElementById("userPumpStatus");
+                    if (data.pump_status === true) {
+                        statusText.innerText = "🟢 บอร์ดทำงาน: เปิดปั๊มน้ำอยู่";
+                        statusText.style.color = "#10b981";
+                    } else {
+                        statusText.innerText = "🔴 บอร์ดทำงาน: ปิดปั๊มน้ำอยู่";
+                        statusText.style.color = "#ef4444";
+                    }
+                } else {
+                    // หากยังไม่มีข้อมูลส่งมาจากบอร์ดเลย ให้โชว์เครื่องหมายรอค่า
+                    document.getElementById("userPumpStatus").innerText = "⏳ รอข้อมูลจากบอร์ด...";
+                    document.getElementById("userPumpStatus").style.color = "#64748b";
+                }
+            });
         }
     });
 
-    // 🚀 2. ผูกเหตุการณ์คลิกปุ่มควบคุมปั๊มน้ำฝั่ง User
+    // 🚀 3. ผูกเหตุการณ์คลิกปุ่มควบคุมปั๊มน้ำ โดยส่ง UID ของตัวเองแนบไปด้วย
     document.getElementById("userPumpOnBtn").addEventListener("click", async () => {
-        const success = await sendUserControlCommand(true);
-        if (success) { 
-            document.getElementById("userPumpStatus").innerText = "🟢 เปิดปั๊มแล้ว"; 
-            document.getElementById("userPumpStatus").style.color = "#10b981";
+        if (currentLoggedUid) {
+            document.getElementById("userPumpStatus").innerText = "⚡ กำลังส่งคำสั่งเปิด...";
+            await sendUserControlCommand(currentLoggedUid, true);
         }
     });
 
     document.getElementById("userPumpOffBtn").addEventListener("click", async () => {
-        const success = await sendUserControlCommand(false);
-        if (success) { 
-            document.getElementById("userPumpStatus").innerText = "🔴 ปิดปั๊มแล้ว"; 
-            document.getElementById("userPumpStatus").style.color = "#ef4444";
+        if (currentLoggedUid) {
+            document.getElementById("userPumpStatus").innerText = "⚡ กำลังส่งคำสั่งปิด...";
+            await sendUserControlCommand(currentLoggedUid, false);
         }
     });
 
-    // 3. ตั้งค่าปุ่มออกจากระบบ (Logout)
+    // 4. ตั้งค่าปุ่มออกจากระบบ (Logout)
     document.getElementById("logoutBtn").addEventListener("click", () => {
         logoutUser();
     });

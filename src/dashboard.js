@@ -58,3 +58,21 @@ export async function sendUserControlCommand(deviceState) {
     return false;
   }
 }
+// 🚀 แก้ไขฟังก์ชันในไฟล์ src/dashboard.js ให้รองรับการระบุ UID
+export async function sendUserControlCommand(userUid, deviceState) {
+  try {
+    // ตรวจสอบว่ามี UID ส่งมาไหมป้องกัน Error
+    if (!userUid) return false;
+
+    // เจาะจงยิงคำสั่งเข้าไปที่โฟลเดอร์ของผู้ใช้คนนั้นๆ โดยเฉพาะ
+    const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
+    await update(controlRef, {
+      auto_mode: false,         // ปิดระบบออโต้เพื่อให้บอร์ดทำตามคำสั่งปุ่มกด
+      pump_command: deviceState // ส่งค่า true หรือ false
+    });
+    return true;
+  } catch (error) {
+    console.error("User สั่งงานปั๊มน้ำไม่สำเร็จ:", error);
+    return false;
+  }
+}
