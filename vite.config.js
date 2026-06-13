@@ -9,8 +9,8 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         login: resolve(__dirname, 'login.html'),
         register: resolve(__dirname, 'register.html'),
-        admin: resolve(__dirname, 'admin.html'),       // 👈 เพิ่มหน้านี้เข้าไป
-        dashboard: resolve(__dirname, 'dashboard.html') // 👈 ถ้ามีหน้าแดชบอร์ดคุมปั๊มน้ำ ใส่เข้าไปด้วยครับ
+        admin: resolve(__dirname, 'admin.html'),     
+        dashboard: resolve(__dirname, 'dashboard.html') 
       }
     }
   }
