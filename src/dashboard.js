@@ -1,11 +1,9 @@
-// 🚀 จุดที่ 1: เพิ่มการนำเข้า rtdb เข้ามาจากไฟล์คอนฟิกหลัก
 import { auth, db, rtdb } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-// 🚀 จุดที่ 2: นำเข้าฟังก์ชัน ref และ update เพื่อส่งค่าไปยัง Realtime Database
 import { ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// 1. ฟังก์ชันคอยตรวจจับว่าผู้ใช้คนนี้ล็อกอินอยู่ไหม (โค้ดเดิมของคุณ)
+// 1. ฟังก์ชันคอยตรวจจับว่าผู้ใช้คนนี้ล็อกอินอยู่ไหม และดึงข้อมูลให้ทันที
 export function checkUserLogin(callback) {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -16,7 +14,7 @@ export function checkUserLogin(callback) {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          // 💡 แอบแนบ uid เข้าไปในก้อนข้อมูลด้วย เพื่อให้หน้า profile ดึงไปใช้ได้ง่ายๆ
+          // แนบ uid เข้าไปในก้อนข้อมูลด้วย เพื่อให้หน้าเว็บดึงไปใช้แยกโฟลเดอร์ใน Realtime DB
           const userData = docSnap.data();
           userData.uid = user.uid; 
           callback(userData);
@@ -34,7 +32,7 @@ export function checkUserLogin(callback) {
   });
 }
 
-// 2. ฟังก์ชันสำหรับกดออกจากระบบ (โค้ดเดิมของคุณ)
+// 2. ฟังก์ชันสำหรับกดออกจากระบบ
 export function logoutUser() {
   signOut(auth).then(() => {
     alert("ออกจากระบบเรียบร้อยแล้ว!");
@@ -44,31 +42,16 @@ export function logoutUser() {
   });
 }
 
-// 🚀 3. ฟังก์ชันที่เพิ่มเข้ามาใหม่: ให้ User ทั่วไปสั่งเปิด-ปิดปั๊มน้ำน้ำจากหน้าแดชบอร์ดได้
-export async function sendUserControlCommand(deviceState) {
-  try {
-    // ชี้ไปที่ Node 'control' ในฐานข้อมูล Realtime Database ตัวเดียวกับที่บอร์ดฟังค่าอยู่
-    const controlRef = ref(rtdb, 'control');
-    await update(controlRef, {
-      pump: deviceState // สั่งงานปั๊มไดอะแฟรม (รับค่า true หรือ false)
-    });
-    return true;
-  } catch (error) {
-    console.error("User สั่งงานปั๊มน้ำไม่สำเร็จ:", error);
-    return false;
-  }
-}
-// 🚀 แก้ไขฟังก์ชันในไฟล์ src/dashboard.js ให้รองรับการระบุ UID
+// 🚀 3. ฟังก์ชันสำหรับส่งคำสั่งควบคุมปั๊มน้ำฝั่ง User (มีตัวเดียวตรงนี้ ห้ามซ้ำ!)
 export async function sendUserControlCommand(userUid, deviceState) {
   try {
-    // ตรวจสอบว่ามี UID ส่งมาไหมป้องกัน Error
     if (!userUid) return false;
 
-    // เจาะจงยิงคำสั่งเข้าไปที่โฟลเดอร์ของผู้ใช้คนนั้นๆ โดยเฉพาะ
+    // ชี้เป้าไปที่โฟลเดอร์ UID ของผู้ใช้คนนั้นๆ ในโครงสร้างแบบ Multi-User
     const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
     await update(controlRef, {
-      auto_mode: false,         // ปิดระบบออโต้เพื่อให้บอร์ดทำตามคำสั่งปุ่มกด
-      pump_command: deviceState // ส่งค่า true หรือ false
+      auto_mode: false,         // ปิดระบบออโต้เพื่อให้บอร์ดทำตามคำสั่งแบบ Manual
+      pump_command: deviceState // ค่าจะเป็น true (เปิด) หรือ false (ปิด)
     });
     return true;
   } catch (error) {
