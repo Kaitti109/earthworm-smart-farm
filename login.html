@@ -22,8 +22,8 @@
             <h2>เข้าสู่ระบบ</h2>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="email">อีเมล (Email)</label>
-                    <input type="email" id="email" placeholder="example@email.com" required>
+                    <label for="identifier">อีเมล / ชื่อผู้ใช้ / เบอร์โทรศัพท์</label>
+                    <input type="text" id="identifier" placeholder="กรอกอีเมล, Username หรือเบอร์โทร" required>
                 </div>
                 <div class="form-group">
                     <label for="password">รหัสผ่าน (Password)</label>
@@ -46,20 +46,21 @@
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const email = document.getElementById("email").value;
+        // 🚀 จุดที่ 2: เปลี่ยนการดึงค่าไอดีช่องกรอกข้อมูลให้ตรงกับอินพุตใหม่ข้างบน
+        const identifier = document.getElementById("identifier").value;
         const password = document.getElementById("password").value;
 
         const submitBtn = e.target.querySelector("button");
         submitBtn.innerText = "กำลังตรวจสอบ...";
         submitBtn.disabled = true;
 
-        // เรียกฟังก์ชัน Login
-        const result = await handleLogin(email, password);
+        // เรียกฟังก์ชัน Login โดยส่งตัวแปร identifier (Email/User/Phone) เข้าไปประมวลผล
+        const result = await handleLogin(identifier, password);
 
         if (result.success) {
             alert("เข้าสู่ระบบสำเร็จ!");
 
-            // 🚀 เช็กบทบาท (Role) ของผู้ใช้ที่ล็อกอินเข้ามา
+            // เช็กบทบาท (Role) ของผู้ใช้ที่ล็อกอินเข้ามา
             if (result.data && result.data.role === "admin") {
                 // ถ้าเป็น Admin ให้เด้งไปหน้าแผงควบคุมระบบ
                 window.location.href = "./admin.html";
