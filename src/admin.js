@@ -1,8 +1,6 @@
-import { auth, db, rtdb } from "./firebase.js"; // 🚀 จุดที่ 1: เพิ่ม rtdb เข้ามาเพื่อใช้กับปั๊มน้ำ
+import { auth, db, rtdb } from "./firebase.js"; 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-// 🚀 จุดที่ 2: เพิ่ม updateDoc เข้ามาเพื่อใช้สำหรับเปลี่ยนสิทธิ์สมาชิก
 import { doc, getDoc, collection, getDocs, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-// 🚀 จุดที่ 3: นำเข้าฟังก์ชันสำหรับเขียนสั่งการไปยัง Realtime Database ของตัวบอร์ด IoT
 import { ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 // 1. ฟังก์ชันตรวจสอบสิทธิ์ Admin (โค้ดเดิมของคุณ)
@@ -15,7 +13,11 @@ export function checkAdminPermission(callback) {
 
         if (userDocSnap.exists() && userDocSnap.data().role === "admin") {
           console.log("ยินดีต้อนรับรหัส Admin:", user.uid);
-          callback(userDocSnap.data()); 
+          
+          // 💡 แนบ uid ของแอดมินเข้าไปด้วย เพื่อให้หน้า UI ดึงสิทธิ์ไปใช้ดูโปรเจกต์ของตัวเองได้
+          const adminData = userDocSnap.data();
+          adminData.uid = user.uid;
+          callback(adminData); 
         } else {
           alert("คุณไม่มีสิทธิ์เข้าถึงหน้านี้ (สำหรับ Admin เท่านั้น)");
           window.location.href = "./login.html";
@@ -56,7 +58,7 @@ export async function deleteUserFromDB(uid) {
   }
 }
 
-// 🚀 4. ฟังก์ชันที่ขาดไป: อัปเดตปรับเปลี่ยนสิทธิ์ผู้ใช้ (User <-> Admin) จากหน้าเว็บ
+// 4. ฟังก์ชันอัปเดตปรับเปลี่ยนสิทธิ์ผู้ใช้ (User <-> Admin) จากหน้าเว็บ (โค้ดเดิมของคุณ)
 export async function updateUserRole(uid, newRole) {
   try {
     const userDocRef = doc(db, "users", uid);
@@ -70,17 +72,21 @@ export async function updateUserRole(uid, newRole) {
   }
 }
 
-// 🚀 5. ฟังก์ชันที่ขาดไป: สั่งการบอร์ด IoT (ส่งค่า true/false ไปที่ปั๊มน้ำในฐานข้อมูล)
-export async function sendControlCommand(deviceState) {
+// 🚀 5. แก้ไขใหม่: สั่งการบอร์ด IoT ของแอดมินให้ตรงกับระบบ Multi-User (UID)
+// เราเพิ่มตัวแปร targetUid เข้ามา เพื่อให้แอดมินสั่งเปิดปิดปั๊มของ User คนที่กำลังเลือกดูอยู่ได้ด้วย!
+export async function sendControlCommand(targetUid, deviceState) {
   try {
-    // อ้างอิงไปยัง node ที่ชื่อว่า 'control' ใน Realtime Database
-    const controlRef = ref(rtdb, 'control');
+    if (!targetUid) return false;
+
+    // เปลี่ยนเส้นทางจาก 'control' เฉยๆ ให้กลายเป็นเจาะเข้าโฟลเดอร์ UID ของฟาร์มเป้าหมายเป๊ะๆ
+    const controlRef = ref(rtdb, `users_farms/${targetUid}/controls`);
     await update(controlRef, {
-      pump: deviceState // สั่งงานปั๊มไดอะแฟรม
+      auto_mode: false,         // ปล่อยคำสั่ง Manual เข้าไปคุมบอร์ด
+      pump_command: deviceState // ส่งค่าสั่งงานปั๊มน้ำ (true/false)
     });
     return true;
   } catch (error) {
-    console.error("ส่งคำสั่งควบคุมบอร์ดไม่สำเร็จ:", error);
+    console.error("ส่งคำสั่งควบคุมบอร์ดจากสิทธิ์ Admin ไม่สำเร็จ:", error);
     return false;
   }
 }

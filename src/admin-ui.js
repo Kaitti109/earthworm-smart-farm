@@ -1,13 +1,18 @@
 import { checkAdminPermission, getAllUsers, deleteUserFromDB, updateUserRole, sendControlCommand } from "./admin.js";
 import { logoutUser } from "./dashboard.js";
 
-// 1. ตรวจสิทธิ์ Admin ตอนเข้าหน้าเว็บ (คงเดิม)
+// สร้างตัวแปรส่วนกลางสำหรับเก็บ UID ของแอดมินเอง (กรณีเปิดเข้ามาดูฟาร์มตัวเอง)
+let adminUid = "";
+
+// 1. ตรวจสิทธิ์ Admin ตอนเข้าหน้าเว็บ
 checkAdminPermission((adminData) => {
+    // 💡 เก็บ UID ของแอดมินเอาไว้ใช้งาน
+    adminUid = adminData.uid; 
     document.getElementById("adminName").innerText = adminData.username;
     renderUserTable();
 });
 
-// 2. 🚀 อัปเดตฟังก์ชันวาดตาราง: เพิ่มปุ่ม "ดูโปรไฟล์" เข้าไปในคอลัมน์การจัดการ
+// 2. อัปเดตฟังก์ชันวาดตาราง: เพิ่มปุ่ม "ดูโปรไฟล์" เข้าไปในคอลัมน์การจัดการ (คงเดิม)
 async function renderUserTable() {
     const users = await getAllUsers();
     const tbody = document.getElementById("userTableBody");
@@ -23,7 +28,6 @@ async function renderUserTable() {
             </select>
         `;
 
-        // 📝 เพิ่มปุ่ม <button class="btn-view-profile"> สำหรับส่ง uid ไปหน้า profile.html
         tr.innerHTML = `
             <td>${user.username || 'ไม่ระบุ'}</td>
             <td>${user.email}</td>
@@ -40,13 +44,11 @@ async function renderUserTable() {
     addTableEvents();
 }
 
-// 3. 🚀 อัปเดตการผูก Event: เพิ่มการดักฟังปุ่มกดดูโปรไฟล์
+// 3. อัปเดตการผูก Event: ดักฟังปุ่มกดดูโปรไฟล์ (คงเดิม)
 function addTableEvents() {
-    // เหตุการณ์กดปุ่มดูโปรไฟล์
     document.querySelectorAll(".btn-view-profile").forEach(button => {
         button.addEventListener("click", (e) => {
             const uid = e.target.getAttribute("data-uid");
-            // วาร์ปไปหน้าโปรไฟล์พร้อมแนบไอดีผู้ใช้คนนั้นไปด้วย
             window.location.href = `./profile.html?uid=${uid}`;
         });
     });
@@ -71,15 +73,28 @@ function addTableEvents() {
     });
 }
 
-// 4. ผูก Event ปุ่มควบคุมบอร์ด IoT (คงเดิม)
+// 🚀 4. ปรับปรุงใหม่: ผูก Event ปุ่มควบคุมบอร์ด IoT โดยส่ง UID แนบไปด้วยให้ตรงกับฟังก์ชันใหม่
 document.getElementById("pumpOnBtn").addEventListener("click", async () => {
-    const success = await sendControlCommand(true);
-    if (success) { document.getElementById("controlStatus").innerText = "ส่งคำสั่ง: เปิดปั๊มน้ำสำเร็จ"; }
+    // ดึงค่า UID จาก URL (กรณีแอดมินส่องโปรไฟล์คนอื่นอยู่แล้วเปิดหน้าควบคุมมา) ถ้าไม่มีให้ใช้ UID แอดมินเอง
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetUid = urlParams.get("uid") || adminUid;
+
+    if (targetUid) {
+        document.getElementById("controlStatus").innerText = "⚡ กำลังส่งคำสั่งเปิด...";
+        const success = await sendControlCommand(targetUid, true); // 💡 ส่ง targetUid พ่วงไปด้วย
+        if (success) { document.getElementById("controlStatus").innerText = "ส่งคำสั่ง: เปิดปั๊มน้ำสำเร็จ"; }
+    }
 });
 
 document.getElementById("pumpOffBtn").addEventListener("click", async () => {
-    const success = await sendControlCommand(false);
-    if (success) { document.getElementById("controlStatus").innerText = "ส่งคำสั่ง: ปิดปั๊มน้ำสำเร็จ"; }
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetUid = urlParams.get("uid") || adminUid;
+
+    if (targetUid) {
+        document.getElementById("controlStatus").innerText = "⚡ กำลังส่งคำสั่งปิด...";
+        const success = await sendControlCommand(targetUid, false); // 💡 ส่ง targetUid พ่วงไปด้วย
+        if (success) { document.getElementById("controlStatus").innerText = "ส่งคำสั่ง: ปิดปั๊มน้ำสำเร็จ"; }
+    }
 });
 
 // 5. ผูก Event ปุ่มออกจากระบบ (คงเดิม)
