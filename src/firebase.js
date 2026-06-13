@@ -3,7 +3,8 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// ดึงค่าตามมาตรฐานของ Vite (ตอนรันในคอมจะดึงจาก .env ตอนอยู่บน Vercel จะดึงจากหน้า Settings)
+// 🚀 โครงสร้างมาตรฐานระดับมืออาชีพของ Vite
+// ระบบจะวิ่งไปดึงค่าเพียวๆ จาก .env (ตอนรันในคอม) หรือดึงจากเว็บ Vercel (ตอนอยู่บนลิงก์จริง) มาเสียบให้เอง
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -14,8 +15,10 @@ const firebaseConfig = {
   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL
 };
 
+// เริ่มต้นใช้งานแอป
 const app = initializeApp(firebaseConfig);
 
+// ส่งออกโมดูลหลักไปใช้งานในหน้า Login, Register, Dashboard
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
