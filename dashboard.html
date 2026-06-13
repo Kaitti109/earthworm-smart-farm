@@ -35,6 +35,18 @@
         <p>ข้อมูลอัปเดตแบบเรียลไทม์จากระบบเซนเซอร์ในฟาร์มไส้เดือน</p>
     </div>
 
+    <div class="user-control-panel" style="background: white; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+        <div>
+            <h3 style="margin: 0; color: #0f172a; font-size: 18px; font-weight: 700;">💧 สั่งเปิด-ปิดปั๊มน้ำไดอะแฟรม</h3>
+            <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">User สามารถกดเปิดระบบพ่นหมอกเพิ่มความชื้นให้กับไส้เดือนได้เองทันที</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button id="userPumpOnBtn" style="background-color: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">เปิดปั๊มน้ำ (ON)</button>
+            <button id="userPumpOffBtn" style="background-color: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">ปิดปั๊มน้ำ (OFF)</button>
+            <span id="userPumpStatus" style="font-weight: 600; color: #1e293b; font-size: 14px; margin-left: 5px;"></span>
+        </div>
+    </div>
+
     <div class="grid">
         <div class="card temp-color">
             <h3>อุณหภูมิ (Temperature)</h3>
@@ -52,7 +64,8 @@
 </div>
 
 <script type="module">
-    import { checkUserLogin, logoutUser } from "./src/dashboard.js";
+    // 🚀 อิมพอร์ตฟังก์ชันสั่งงานอันใหม่เข้ามาร่วมทำงาน
+    import { checkUserLogin, logoutUser, sendUserControlCommand } from "./src/dashboard.js";
 
     // 1. ตรวจสอบสถานะการล็อกอินและแสดงข้อมูลเซนเซอร์
     checkUserLogin((userData) => {
@@ -64,14 +77,31 @@
                 document.getElementById("adminMenuBtn").style.display = "none";
             }
 
-            // ดึงค่ามาแสดงผล
+            // ดึงค่าเซนเซอร์มาแสดงผล
             document.getElementById("tempVal").innerText = userData.temperature !== undefined ? userData.temperature : "28.5";
             document.getElementById("humidityVal").innerText = userData.humidity !== undefined ? userData.humidity : "75";
             document.getElementById("phVal").innerText = userData.ph !== undefined ? userData.ph : "6.8";
         }
     });
 
-    // 2. ตั้งค่าปุ่มออกจากระบบ (Logout)
+    // 🚀 2. ผูกเหตุการณ์คลิกปุ่มควบคุมปั๊มน้ำฝั่ง User
+    document.getElementById("userPumpOnBtn").addEventListener("click", async () => {
+        const success = await sendUserControlCommand(true);
+        if (success) { 
+            document.getElementById("userPumpStatus").innerText = "🟢 เปิดปั๊มแล้ว"; 
+            document.getElementById("userPumpStatus").style.color = "#10b981";
+        }
+    });
+
+    document.getElementById("userPumpOffBtn").addEventListener("click", async () => {
+        const success = await sendUserControlCommand(false);
+        if (success) { 
+            document.getElementById("userPumpStatus").innerText = "🔴 ปิดปั๊มแล้ว"; 
+            document.getElementById("userPumpStatus").style.color = "#ef4444";
+        }
+    });
+
+    // 3. ตั้งค่าปุ่มออกจากระบบ (Logout)
     document.getElementById("logoutBtn").addEventListener("click", () => {
         logoutUser();
     });
