@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก - Firebase Register</title>
+    
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<div class="split-screen">
+    <div class="left-side">
+        <div class="brand-text">
+            <h1>Smart Earthworm Farm</h1>
+            <p>ระบบควบคุมและติดตามสภาพแวดล้อมฟาร์มไส้เดือนอัจฉริยะ</p>
+        </div>
+    </div>
+
+    <div class="right-side">
+        <div class="register-container">
+            <h2>สมัครสมาชิก</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="username">ชื่อผู้ใช้ (Username)</label>
+                    <input type="text" id="username" placeholder="กรอกชื่อผู้ใช้" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">อีเมล (Email)</label>
+                    <input type="email" id="email" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">เบอร์โทรศัพท์ (Phone)</label>
+                    <input type="tel" id="phone" placeholder="08X-XXXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">รหัสผ่าน (Password)</label>
+                    <input type="password" id="password" placeholder="อย่างน้อย 6 ตัวอักษร" required>
+                </div>
+                <button type="submit">ลงทะเบียน</button>
+            </form>
+
+            <div class="link-container">
+                มีบัญชีผู้ใช้แล้ว? 
+                <a href="./login.html">เข้าสู่ระบบที่นี่</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    // นำเข้าฟังก์ชันมาจากไฟล์ในโฟลเดอร์ src
+    import { handleRegister } from "./src/register.js";
+
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+        e.preventDefault(); 
+
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const password = document.getElementById("password").value;
+
+        const submitBtn = e.target.querySelector("button");
+        submitBtn.innerText = "กำลังลงทะเบียน...";
+        submitBtn.disabled = true;
+
+        // เรียกใช้งานฟังก์ชันลงทะเบียนที่เชื่อมกับ Firebase
+        const success = await handleRegister(email, password, username, phone);
+
+        if (success) {
+            // ล้างข้อมูลในฟอร์ม
+            document.getElementById("registerForm").reset();
+
+            // เด้งไปยังหน้า login.html ทันทีที่สมัครเสร็จ
+            window.location.href = "./login.html";
+        } else {
+            // ถ้าไม่สำเร็จ ให้คืนค่าปุ่มกลับมาเพื่อให้กดใหม่ได้
+            submitBtn.innerText = "ลงทะเบียน";
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>

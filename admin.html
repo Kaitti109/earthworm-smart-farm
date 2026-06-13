@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - จัดการระบบ</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
+        .admin-container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2 { color: #333; border-left: 5px solid #d32f2f; padding-left: 10px; margin-bottom: 20px; }
+        .welcome-text { color: #666; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #37474f; color: white; }
+        tr:hover { background-color: #f5f5f5; }
+        .btn-delete { background-color: #e53935; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .btn-delete:hover { background-color: #c62828; }
+        .badge-user { background: #e0e0e0; padding: 3px 8px; border-radius: 12px; font-size: 12px; }
+        .badge-admin { background: #ffebee; color: #c62828; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <h2>แผงควบคุมผู้ดูแลระบบ (Admin Panel)</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <p style="margin: 0;">สวัสดีรหัสผู้ดูแล: <strong id="adminName">กำลังโหลด...</strong></p>
+        
+        <button onclick="window.location.href='./dashboard.html'" style="background-color: #0288d1; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            📊 ไปหน้าจอ User (Dashboard)
+        </button>
+    </div>
+    <p class="welcome-text">สวัสดีรหัสผู้ดูแล: <strong id="adminName">กำลังโหลด...</strong></p>
+
+    <h3>รายชื่อสมาชิกทั้งหมดในระบบ</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ชื่อผู้ใช้ (Username)</th>
+                <th>อีเมล (Email)</th>
+                <th>เบอร์โทรศัพท์</th>
+                <th>บทบาท (Role)</th>
+                <th>การจัดการ</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <tr>
+                <td colspan="5" style="text-align: center; color: #999;">กำลังโหลดข้อมูลสมาชิก...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script type="module">
+    import { checkAdminPermission, getAllUsers, deleteUserFromDB } from "./src/admin.js";
+
+    // 1. ตรวจสิทธิ์ความเป็น Admin ทันทีที่เปิดหน้าเว็บ
+    checkAdminPermission((adminData) => {
+        document.getElementById("adminName").innerText = adminData.username;
+        // ถ้าเป็น Admin ตัวจริง ให้ทำการโหลดรายชื่อสมาชิกมาโชว์ในตารางต่อทันที
+        renderUserTable();
+    });
+
+    // 2. ฟังก์ชันวาดตารางรายชื่อสมาชิก
+    async function renderUserTable() {
+        const users = await getAllUsers();
+        const tbody = document.getElementById("userTableBody");
+        tbody.innerHTML = ""; // ล้างค่า Loading ออกไป
+
+        if(users.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">ไม่มีข้อมูลสมาชิกในระบบ</td></tr>`;
+            return;
+        }
+
+        users.forEach(user => {
+            const tr = document.createElement("tr");
+            
+            // ตรวจสอบสีของ Badge ตามสิทธิ์
+            const roleBadge = user.role === 'admin' 
+                ? `<span class="badge-admin">Admin</span>` 
+                : `<span class="badge-user">User</span>`;
+
+            tr.innerHTML = `
+                <td>${user.username || 'ไม่ระบุ'}</td>
+                <td>${user.email}</td>
+                <td>${user.phone || '-'}</td>
+                <td>${roleBadge}</td>
+                <td>
+                    <button class="btn-delete" data-uid="${user.uid}">ลบสมาชิก</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // ผูกเหตุการณ์ตอนกดปุ่มลบสมาชิก
+        addDeleteEvent();
+    }
+
+    // 3. ฟังก์ชันดักจับปุ่มลบ
+    function addDeleteEvent() {
+        const deleteButtons = document.querySelectorAll(".btn-delete");
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", async (e) => {
+                const uid = e.target.getAttribute("data-uid");
+                
+                if (confirm("คุณแน่ใจใช่ไหมว่าต้องการลบสมาชิกคนนี้ออกจากฐานข้อมูล?")) {
+                    e.target.innerText = "กำลังลบ...";
+                    e.target.disabled = true;
+
+                    const success = await deleteUserFromDB(uid);
+                    if (success) {
+                        alert("ลบข้อมูลสมาชิกสำเร็จ!");
+                        renderUserTable(); // วาดตารางใหม่เพื่ออัปเดตข้อมูลล่าสุด
+                    } else {
+                        alert("เกิดข้อผิดพลาด ไม่สามารถลบได้");
+                        e.target.innerText = "ลบสมาชิก";
+                        e.target.disabled = false;
+                    }
+                }
+            });
+        });
+    }
+</script>
+
+</body>
+</html>

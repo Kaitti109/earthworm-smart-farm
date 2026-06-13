@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ - Firebase Login</title>
+    
+    <link rel="stylesheet" href="./css/login.css">
+</head>
+<body>
+
+<div class="split-screen">
+    <div class="left-side">
+        <div class="brand-text">
+            <h1>Smart Earthworm Farm</h1>
+            <p>ระบบควบคุมและติดตามสภาพแวดล้อมฟาร์มไส้เดือนอัจฉริยะ</p>
+        </div>
+    </div>
+
+    <div class="right-side">
+        <div class="register-container" id="loginBox">
+            <h2>เข้าสู่ระบบ</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">อีเมล (Email)</label>
+                    <input type="email" id="email" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">รหัสผ่าน (Password)</label>
+                    <input type="password" id="password" placeholder="กรอกรหัสผ่าน" required>
+                </div>
+                <button type="submit">ล็อกอิน</button>
+            </form>
+
+            <div class="link-container">
+                ยังไม่มีบัญชีผู้ใช้? 
+                <a href="./index.html">สมัครสมาชิกที่นี่</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { handleLogin } from "./src/login.js";
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const submitBtn = e.target.querySelector("button");
+        submitBtn.innerText = "กำลังตรวจสอบ...";
+        submitBtn.disabled = true;
+
+        // เรียกฟังก์ชัน Login
+        const result = await handleLogin(email, password);
+
+        if (result.success) {
+            alert("เข้าสู่ระบบสำเร็จ!");
+
+            // 🚀 เช็กบทบาท (Role) ของผู้ใช้ที่ล็อกอินเข้ามา
+            if (result.data && result.data.role === "admin") {
+                // ถ้าเป็น Admin ให้เด้งไปหน้าแผงควบคุมระบบ
+                window.location.href = "./admin.html";
+            } else {
+                // ถ้าเป็น User ปกติ ให้เด้งไปหน้าดูค่าอุณหภูมิความชื้นปกติ
+                window.location.href = "./dashboard.html";
+            }
+        }
+
+        submitBtn.innerText = "ล็อกอิน";
+        submitBtn.disabled = false;
+    });
+</script>
+
+</body>
+</html>

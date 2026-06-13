@@ -1,0 +1,216 @@
+/* 🎨 คุมโทนสีใหม่ให้หน้า Login ดูนิ่ง เท่ และแตกต่าง (เขียวลึกสลับดาร์กโหมดบางส่วน) */
+:root {
+    --login-primary: #1b5e20;       /* สีเขียวเข้มลึก */
+    --login-primary-light: #2e7d32; /* เขียวสว่างสำหรับโฟกัส */
+    --login-hover: #115e59;         /* เขียวอมฟ้าอมเทาตอน Hover */
+    --text-main: #1e293b;           /* สีตัวอักษรเข้มชัดเจน */
+    --text-muted: #64748b;
+    --bg-left-blend: #0f172a;       /* สีเข้มสำหรับถมน้ำหนักฝั่งซ้าย */
+    --border-radius: 12px;           /* ปรับให้มนสวยขึ้น */
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* แอนิเมชันพลิ้วขึ้น */
+}
+
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; 
+    padding: 0;
+    height: 100vh;
+    background-color: #ffffff;
+    color: var(--text-main);
+    overflow: hidden;
+}
+
+/* 🔄 ย้ายกลับมาฝั่งเดิม (row ปกติ: ซ้ายรูป ขวาฟอร์ม) */
+.split-screen {
+    display: flex;
+    flex-direction: row; 
+    width: 100%;
+    height: 100vh;
+}
+
+/* 🖼️ ดีไซน์ฝั่งรูปภาพ (กลับมาอยู่ฝั่งซ้าย) */
+.left-side {
+    flex: 1.3; /* เพิ่มความกว้างฝั่งรูปให้ดูอลังการขึ้น */
+    /* ไล่เฟดดาร์กโหมดลึกลับจากซ้าย แล้วไปจางหายเป็นสีขาวนวลเปิดทางให้ฟอร์มฝั่งขวา */
+    background-image: 
+        linear-gradient(to right, rgba(15, 23, 42, 0.8) 20%, rgba(15, 23, 42, 0.3) 70%, #ffffff 100%), 
+        url('https://www.technologychaoban.com/wp-content/uploads/2016/11/9-4.jpg'); 
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 40px;
+    position: relative;
+}
+
+/* ข้อความบนรูปฝั่งซ้าย - ปรับดีไซน์ให้หรูหราขึ้น */
+.brand-text {
+    text-align: center;
+    backdrop-filter: blur(8px); /* เพิ่มความเบลอของกระจก */
+    background: rgba(15, 23, 42, 0.45); /* ใช้สีมืดโปร่งแสงครอบ */
+    padding: 40px 50px;
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.brand-text h1 {
+    font-size: 3rem;
+    margin: 0 0 15px 0;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    background: linear-gradient(to right, #ffffff, #a7f3d0); /* ไล่สีตัวอักษรขาวไปเขียวมิ้นต์ */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-text p {
+    font-size: 1.15rem;
+    margin: 0;
+    opacity: 0.9;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+/* 📝 ดีไซน์ฝั่งฟอร์ม (กลับมาอยู่ฝั่งขวา) */
+.right-side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 40px;
+    box-shadow: -15px 0 30px rgba(0, 0, 0, 0.02); /* เงาซ้อนบางๆ ฝั่งซ้าย */
+}
+
+.register-container { 
+    width: 100%; 
+    max-width: 360px; 
+}
+
+h2 { 
+    text-align: center; 
+    margin-bottom: 35px; 
+    color: var(--text-main); 
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.form-group { 
+    margin-bottom: 22px; 
+}
+
+label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: 600; 
+    font-size: 13px; 
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input { 
+    width: 100%; 
+    padding: 15px; 
+    border: 1.5px solid #e2e8f0; /* เส้นขอบคมชัดขึ้น */
+    border-radius: var(--border-radius); 
+    box-sizing: border-box; 
+    font-size: 14px;
+    background-color: #f8fafc; /* สีเทานวลแบบโมเดิร์น */
+    color: var(--text-main);
+    transition: var(--transition-smooth);
+}
+
+/* โฟกัสเรืองแสงสีเขียวลึกแบบนุ่มนวล */
+input:focus {
+    border-color: var(--login-primary-light);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.15);
+    outline: none;
+}
+
+/* ปุ่มล็อกอินโทนสีเขียวลึกสุขุม */
+button { 
+    width: 100%; 
+    padding: 15px; 
+    background-color: var(--login-primary); 
+    color: white; 
+    border: none; 
+    border-radius: var(--border-radius); 
+    font-size: 16px; 
+    cursor: pointer; 
+    font-weight: 600;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(27, 94, 32, 0.25);
+    transition: var(--transition-smooth);
+    letter-spacing: 0.5px;
+}
+
+/* เอาเมาส์ชี้แล้วปุ่มจะเปลี่ยนเฉดนุ่มๆ ลอยขึ้นมานิดนึง */
+button:hover { 
+    background-color: var(--login-hover); 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(17, 94, 89, 0.35);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.link-container { 
+    text-align: center; 
+    margin-top: 30px; 
+    font-size: 14px; 
+    color: var(--text-muted);
+}
+
+.link-container a { 
+    color: var(--login-primary-light); 
+    text-decoration: none; 
+    font-weight: 600; 
+    margin-left: 5px;
+    transition: var(--transition-smooth);
+}
+
+.link-container a:hover { 
+    text-decoration: underline; 
+    color: var(--login-hover);
+}
+
+/* 🎬 Animation Fade In แบบนุ่มละมุน */
+@keyframes loginFadeUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.brand-text { 
+    animation: loginFadeUp 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; 
+}
+
+.register-container { 
+    animation: loginFadeUp 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.15s forwards;
+    opacity: 0; 
+}
+
+/* Responsive หน้าจอมือถือ */
+@media (max-width: 850px) {
+    .split-screen { flex-direction: column; }
+    .left-side { display: none; }
+    .right-side { padding: 30px 20px; background-color: #f8fafc; }
+    .register-container {
+        background: #ffffff; 
+        padding: 40px 30px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+}

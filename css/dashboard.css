@@ -1,0 +1,230 @@
+/* 🎨 คุมโทนสีและค่าพื้นฐานเดิม */
+:root {
+    --bg-main: #f8fafc;
+    --surface: #ffffff;
+    --text-heading: #0f172a;
+    --text-body: #475569;
+    --color-temp: #f97316;
+    --color-humidity: #3b82f6;
+    --color-ph: #10b981;
+    --border-radius: 12px;
+    --shadow-soft: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.02);
+    --transition: all 0.2s ease;
+}
+
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    margin: 0; 
+    padding: 0; 
+    color: var(--text-body);
+    min-height: 100vh;
+
+    /* 🚀 ถมสีขาวนวลทับรูปภาพไว้ 92% (rgba 0.92) เพื่อให้ภาพดูจางๆ สบายตาและอ่านข้อมูลง่าย */
+    background-image: 
+        linear-gradient(rgba(248, 250, 252, 0.92), rgba(248, 250, 252, 0.92)), 
+        url('https://www.technologychaoban.com/wp-content/uploads/2016/11/2-16.jpg'); /* 💡 กัมมี่เปลี่ยนลิงก์รูปตรงนี้ได้เลยครับ */
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* ทำให้รูปพื้นหลังล็อกอยู่กับที่เวลาสกรอลล์หน้าจอ */
+}
+
+/* 🚀 👑 ดีไซน์แถบเมนูบนสุดแบบโมเดิร์น (Navbar Style) */
+.navbar {
+    background-color: #0f172a; /* สีกรมเข้มดาร์กโหมด */
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    height: 70px;
+}
+
+.nav-brand {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #34d399; /* สีเขียวมิ้นต์ผลิใบ */
+}
+
+/* ลิสต์รายการเมนู */
+.nav-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 5px;
+    height: 100%;
+    align-items: center;
+}
+
+.nav-menu li {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.nav-menu a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+/* เอฟเฟกต์ตอนเมาส์ชี้เมนู หรือเมนูที่เปิดอยู่ (Active) */
+.nav-menu a:hover, .nav-menu a.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ไฮไลท์พิเศษสำหรับลิงก์เข้าหน้าแอดมิน */
+.nav-menu a.admin-link {
+    color: #f59e0b;
+}
+.nav-menu a.admin-link:hover {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+}
+
+/* โซนโปรไฟล์ขวาขวา */
+.nav-user-zone {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-greeting {
+    font-size: 14px;
+    color: #cbd5e1;
+}
+.user-greeting strong {
+    color: #34d399;
+}
+
+/* ปุ่มออกจากระบบในเวอร์ชัน Navbar */
+.nav-logout-btn {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.nav-logout-btn:hover {
+    background-color: #ef4444;
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* 🏢 ส่วนเนื้อหาคอนเทนเนอร์หลัก */
+.container { 
+    max-width: 1100px; 
+    margin: 40px auto; 
+    padding: 0 20px;
+}
+
+/* ป้ายแบนเนอร์ทักทายในหน้าหลัก */
+.welcome-banner {
+    margin-bottom: 35px;
+}
+.welcome-banner h2 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--text-heading);
+    font-weight: 700;
+}
+.welcome-banner p {
+    margin: 8px 0 0 0;
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+/* 📊 ระบบ Grid สำหรับการ์ดเซนเซอร์ (ปรับความกว้างขั้นต่ำให้บาลานซ์ขึ้น) */
+.grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 25px; 
+}
+
+.card { 
+    background: var(--surface); 
+    padding: 35px 25px; 
+    border-radius: var(--border-radius); 
+    box-shadow: var(--shadow-soft); 
+    text-align: center; 
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid #edf2f7;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -5px rgba(0,0,0,0.08);
+}
+
+.card h3 { 
+    margin: 0 0 15px 0; 
+    color: var(--text-body); 
+    font-size: 14px; 
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card .value { 
+    font-size: 44px; 
+    font-weight: 800; 
+    letter-spacing: -1px;
+}
+
+.temp-color::before { background-color: var(--color-temp); }
+.temp-color .value { color: var(--color-temp); }
+
+.humidity-color::before { background-color: var(--color-humidity); }
+.humidity-color .value { color: var(--color-humidity); }
+
+.ph-color::before { background-color: var(--color-ph); }
+.ph-color .value { color: var(--color-ph); }
+
+/* Responsive สำหรับมือถือ */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        gap: 15px;
+    }
+    .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .container {
+        margin: 20px auto;
+    }
+}

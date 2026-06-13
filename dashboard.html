@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ระบบฟาร์มอัจฉริยะ</title>
+    
+    <link rel="stylesheet" href="./css/dashboard.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">🐛 Smart Farm</div>
+        
+        <ul class="nav-menu">
+            <li><a href="./dashboard.html" class="active">📊 หน้าหลัก</a></li>
+            <li><a href="#history">📈 ประวัติย้อนหลัง</a></li>
+            <li><a href="#settings">⚙️ ตั้งค่าระบบ</a></li>
+            <li><a href="./admin.html" id="adminMenuBtn" class="admin-link">🛡️ จัดการระบบ (Admin)</a></li>
+        </ul>
+
+        <div class="nav-user-zone">
+            <span class="user-greeting">สวัสดี, <strong id="userNameText">โหลด..</strong></span>
+            <button class="nav-logout-btn" id="logoutBtn">ออกจากระบบ</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="welcome-banner">
+        <h2>แผงควบคุมติดตามสภาพแวดล้อม</h2>
+        <p>ข้อมูลอัปเดตแบบเรียลไทม์จากระบบเซนเซอร์ในฟาร์มไส้เดือน</p>
+    </div>
+
+    <div class="grid">
+        <div class="card temp-color">
+            <h3>อุณหภูมิ (Temperature)</h3>
+            <div class="value"><span id="tempVal">--</span> °C</div>
+        </div>
+        <div class="card humidity-color">
+            <h3>ความชื้น (Moisture)</h3>
+            <div class="value"><span id="humidityVal">--</span> %</div>
+        </div>
+        <div class="card ph-color">
+            <h3>ค่าความเป็นกรด-ด่าง (pH)</h3>
+            <div class="value">pH <span id="phVal">--</span></div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { checkUserLogin, logoutUser } from "./src/dashboard.js";
+
+    // 1. ตรวจสอบสถานะการล็อกอินและแสดงข้อมูลเซนเซอร์
+    checkUserLogin((userData) => {
+        if (userData) {
+            document.getElementById("userNameText").innerText = userData.username;
+
+            // 🔒 ซ่อนเมนูแอดมินบนแท็บเมนู ถ้าล็อกอินเข้ามาด้วยบัญชี User ปกติ
+            if (userData.role !== "admin") {
+                document.getElementById("adminMenuBtn").style.display = "none";
+            }
+
+            // ดึงค่ามาแสดงผล
+            document.getElementById("tempVal").innerText = userData.temperature !== undefined ? userData.temperature : "28.5";
+            document.getElementById("humidityVal").innerText = userData.humidity !== undefined ? userData.humidity : "75";
+            document.getElementById("phVal").innerText = userData.ph !== undefined ? userData.ph : "6.8";
+        }
+    });
+
+    // 2. ตั้งค่าปุ่มออกจากระบบ (Logout)
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        logoutUser();
+    });
+</script>
+
+</body>
+</html>
