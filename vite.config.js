@@ -5,11 +5,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
+        // มัดรวมหน้าเว็บทั้งหมดที่มีในโปรเจกต์ของกัมมี่ส่งขึ้น Vercel
         main: resolve(__dirname, 'index.html'),
         login: resolve(__dirname, 'login.html'),
-        dashboard: resolve(__dirname, 'dashboard.html'),
-        // 💡 ถ้ากัมมี่มีหน้าอื่นๆ อีก เช่น admin.html ให้พิมพ์เพิ่มต่อท้ายตรงนี้ได้เลยนะครับ
-        // admin: resolve(__dirname, 'admin.html'),
+        register: resolve(__dirname, 'register.html'),
+        admin: resolve(__dirname, 'admin.html'),       // 👈 เพิ่มหน้านี้เข้าไป
+        dashboard: resolve(__dirname, 'dashboard.html') // 👈 ถ้ามีหน้าแดชบอร์ดคุมปั๊มน้ำ ใส่เข้าไปด้วยครับ
       }
     }
   }
