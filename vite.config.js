@@ -8,7 +8,8 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         login: resolve(__dirname, 'login.html'),
         admin: resolve(__dirname, 'admin.html'),     
-        dashboard: resolve(__dirname, 'dashboard.html') 
+        dashboard: resolve(__dirname, 'dashboard.html'),
+        profile: resolve(__dirname, 'profile.html'), 
       }
     }
   }
