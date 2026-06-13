@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 // นำคีย์ firebaseConfig ที่ได้จากหน้าจอ Firebase Console มาวางแทนที่ตรงนี้ครับ
 const firebaseConfig = {
@@ -19,4 +20,4 @@ const app = initializeApp(firebaseConfig);
 // ส่งออกโมดูลเพื่อนำไปใช้ในหน้าลงทะเบียน
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-
+export const rtdb = getDatabase(app);
