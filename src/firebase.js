@@ -3,22 +3,27 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// 🚀 โครงสร้างมาตรฐานระดับมืออาชีพของ Vite
-// ระบบจะวิ่งไปดึงค่าเพียวๆ จาก .env (ตอนรันในคอม) หรือดึงจากเว็บ Vercel (ตอนอยู่บนลิงก์จริง) มาเสียบให้เอง
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL
+// 🔐 คอนฟิกของบ้านที่ 1 (Login / Register)
+const authConfig = {
+  apiKey: import.meta.env.VITE_AUTH_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_AUTH_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_AUTH_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_AUTH_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_AUTH_APP_ID
 };
 
-// เริ่มต้นใช้งานแอป
-const app = initializeApp(firebaseConfig);
+// 🪱 คอนฟิกของบ้านที่ 2 (รับค่าจาก ESP32)
+const espConfig = {
+  projectId: import.meta.env.VITE_ESP_PROJECT_ID,
+  databaseURL: import.meta.env.VITE_ESP_DATABASE_URL
+};
 
-// ส่งออกโมดูลหลักไปใช้งานในหน้า Login, Register, Dashboard
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const rtdb = getDatabase(app);
+// 🚀 สั่งเปิดใช้งานพร้อมกัน 2 โปรเจกต์
+const authApp = initializeApp(authConfig);              // ตัวหลักเริ่มต้น
+const espApp = initializeApp(espConfig, "espProject");   // ตัวเสริม (ต้องตั้งชื่อกำกับไว้)
+
+// 📦 ส่งออกโมดูลให้หน้าอื่นๆ ดึงไปใช้ถูกตัว
+export const auth = getAuth(authApp);       // ดึง Auth จากบ้าน Login
+export const db = getFirestore(authApp);    // ดึง Firestore จากบ้าน Login (ถ้ามีเก็บโปรไฟล์)
+export const rtdb = getDatabase(espApp);    // 🎯 ดึง Realtime Database จากบ้าน ESP32!
