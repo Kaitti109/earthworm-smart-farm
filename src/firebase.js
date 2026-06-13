@@ -3,7 +3,7 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// ดึงค่าตามระบบมาตรฐานของ Vite (ห้ามเปลี่ยนโครงสร้างตรงนี้)
+// ดึงค่าตามมาตรฐานของ Vite (ตอนรันในคอมจะดึงจาก .env ตอนอยู่บน Vercel จะดึงจากหน้า Settings)
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
