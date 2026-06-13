@@ -3,21 +3,21 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// นำคีย์ firebaseConfig ที่ได้จากหน้าจอ Firebase Console มาวางแทนที่ตรงนี้ครับ
+// 🔒 ดึงค่าความลับจากไฟล์ .env (หรือจากหน้าตั้งค่า Environment Variables ของ Vercel)
 const firebaseConfig = {
-  apiKey: "AIzaSyCee4qf9jxjxDl--v1asy65vVU5AeKp-vY",
-  authDomain: "register-e70b5.firebaseapp.com",
-  projectId: "register-e70b5",
-  storageBucket: "register-e70b5.firebasestorage.app",
-  messagingSenderId: "702960694852",
-  appId: "1:702960694852:web:475c20235ee58993bbae11",
-  measurementId: "G-1H45KKPWCS"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL // 💡 ท่อหลักสำหรับคุยกับบอร์ด ESP32
 };
 
-// เริ่มต้นเปิดใช้งานแอป
+// เริ่มต้นเปิดใช้งาน Firebase App
 const app = initializeApp(firebaseConfig);
 
-// ส่งออกโมดูลเพื่อนำไปใช้ในหน้าลงทะเบียน
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const rtdb = getDatabase(app);
+// 🚀 ส่งออกโมดูลหลัก (Export) ไปใช้งานในหน้าเว็บต่างๆ (Dashboard, Admin, Register)
+export const auth = getAuth(app);       // ระบบล็อกอิน / สมัครสมาชิก
+export const db = getFirestore(app);     // ฐานข้อมูลเก็บโปรไฟล์สมาชิก (สิทธิ์ User/Admin)
+export const rtdb = getDatabase(app);   // ฐานข้อมูลเรียลไทม์ (ค่าเซนเซอร์ และ ปุ่มควบคุมปั๊มน้ำ)
