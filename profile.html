@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรไฟล์ส่วนตัว - Smart Farm</title>
+    
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <link rel="stylesheet" href="./css/profile.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">🐛 Smart Farm</div>
+        
+        <ul class="nav-menu">
+            <li><a href="./dashboard.html">📊 หน้าหลัก</a></li>
+            <li><a href="#history">📈 ประวัติย้อนหลัง</a></li>
+            <li><a href="#settings">⚙️ ตั้งค่าระบบ</a></li>
+            <li><a href="./admin.html" id="adminMenuBtn" class="admin-link">🛡️ จัดการระบบ (Admin)</a></li>
+        </ul>
+
+        <div class="nav-user-zone">
+            <span class="user-greeting">สวัสดี, <strong id="navUserName">โหลด..</strong></span>
+            <button class="nav-logout-btn" id="logoutBtn">ออกจากระบบ</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="avatar-icon">👤</div>
+            <h2 id="profileUsername">กำลังโหลด...</h2>
+            <span id="profileRole" class="badge">User</span>
+        </div>
+        
+        <div class="profile-body">
+            <div class="info-group">
+                <label>📧 อีเมลประจำบัญชี</label>
+                <div class="info-value" id="profileEmail">-</div>
+            </div>
+            <div class="info-group">
+                <label>📞 เบอร์โทรศัพท์</label>
+                <div class="info-value" id="profilePhone">-</div>
+            </div>
+            <div class="info-group">
+                <label>🆔 รหัสผู้ใช้งาน (UID)</label>
+                <div class="info-value uid-value" id="profileUid">-</div>
+            </div>
+        </div>
+        
+        <div class="profile-footer">
+            <button class="btn-back" onclick="window.location.href='./dashboard.html'">กลับสู่หน้าหลัก</button>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="./src/profile-ui.js"></script>
+
+</body>
+</html>

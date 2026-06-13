@@ -228,3 +228,8 @@ body {
         margin: 20px auto;
     }
 }
+.user-link-hover:hover strong {
+    text-decoration: underline;
+    color: #34d399; /* เปลี่ยนเป็นสีเขียวมิ้นต์ หรือสีทอง #fbbf24 สว่างๆ ตอนชี้ชวนกด */
+    transition: all 0.2s ease;
+}

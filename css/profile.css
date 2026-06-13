@@ -1,0 +1,110 @@
+/* 👤 สไตล์การ์ดแสดงโปรไฟล์ส่วนตัว */
+.profile-card {
+    background: #ffffff;
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+    border: 1px solid #edf2f7;
+    animation: profileFade 0.5s ease-out forwards;
+}
+
+.profile-header {
+    text-align: center;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+}
+
+.avatar-icon {
+    font-size: 60px;
+    background: #f1f5f9;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 15px auto;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.profile-header h2 {
+    margin: 0 0 8px 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* ป้ายระดับสิทธิ์สิทธิ์ */
+.badge {
+    background-color: #e2e8f0;
+    color: #475569;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* สไตล์เมื่อเป็น Admin จะเปลี่ยนป้ายเป็นสีทอง */
+.badge.admin {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.profile-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.info-value {
+    background-color: #f8fafc;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+}
+
+.uid-value {
+    font-family: monospace;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.profile-footer {
+    margin-top: 35px;
+    text-align: center;
+}
+
+.btn-back {
+    background-color: #1e293b;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn-back:hover {
+    background-color: #0f172a;
+    transform: translateY(-1px);
+}
+
+@keyframes profileFade {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
