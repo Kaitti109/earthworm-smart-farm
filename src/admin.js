@@ -1,6 +1,6 @@
 import { auth, db, rtdb } from "./firebase.js"; 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { doc, getDoc, collection, getDocs, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { doc, getDoc, collection, getDocs, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 // 1. ฟังก์ชันตรวจสอบสิทธิ์ Admin (โค้ดเดิมของคุณ)
@@ -35,11 +35,17 @@ export function checkAdminPermission(callback) {
 // 2. ฟังก์ชันดึงรายชื่อสมาชิกทั้งหมดในระบบมาแสดงผล (โค้ดเดิมของคุณ)
 export async function getAllUsers() {
   try {
-    const querySnapshot = await getDocs(collection(db, "users"));
+    // สร้างเงื่อนไข: ไปที่คอลเลกชัน "users" และค้นหาเฉพาะคนที่มี role เท่ากับ "user"
+    const usersCollection = collection(db, "users");
+    const q = query(usersCollection, where("role", "==", "user")); 
+    
+    const querySnapshot = await getDocs(q); // รันคำสั่งสแกนตามเงื่อนไขที่กรองไว้
     const usersList = [];
+    
     querySnapshot.forEach((doc) => {
       usersList.push({ uid: doc.id, ...doc.data() });
     });
+    
     return usersList;
   } catch (error) {
     console.error("ไม่สามารถดึงข้อมูลสมาชิกได้:", error);
