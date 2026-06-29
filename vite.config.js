@@ -9,7 +9,8 @@ export default defineConfig({
         login: resolve(__dirname, 'login.html'),
         admin: resolve(__dirname, 'admin.html'),     
         dashboard: resolve(__dirname, 'dashboard.html'),
-        profile: resolve(__dirname, 'profile.html'), 
+        profile: resolve(__dirname, 'profile.html'),
+        forgotPassword: resolve(__dirname, 'forgot-password.html') 
       }
     }
   }
