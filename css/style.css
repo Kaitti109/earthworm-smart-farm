@@ -2,7 +2,7 @@
 :root {
     --primary-color: #2e7d32;       /* เปลี่ยนเป็นสีเขียวธรรมชาติ เหมาะกับฟาร์มไส้เดือน */
     --primary-hover: #1b5e20;
-    --accent-color: #ffffff;        /* สีฟ้าสลับสำหรับการลิงก์ */
+    --accent-color: #2e7d32;        /* สีฟ้าสลับสำหรับการลิงก์ */
     --text-main: #2c3e50;
     --text-muted: #7f8c8d;
     --bg-light: #f8f9fa;
