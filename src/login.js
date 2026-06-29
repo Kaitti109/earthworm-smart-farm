@@ -1,50 +1,50 @@
 import { auth, db } from "./firebase.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-// 🛠️ จุดที่ 1: เพิ่มคำสั่งเกี่ยวกับ Query ข้อมูลเพิ่มเติมในบรรทัดนี้
-import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// 🎯 เพิ่มอัปเดตบรรทัดที่ 3: เพิ่มคำว่า updateDoc เข้ามาในรายการ import
+import { doc, getDoc, collection, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 🛠️ จุดที่ 2: เปลี่ยนชื่อจาก email เป็น identifier เพื่อให้สื่อความหมายว่ารับค่าได้หลากหลาย
 export async function handleLogin(identifier, password) {
   try {
-    let emailToLogin = identifier; // ตั้งค่าเริ่มต้นไว้ก่อนว่าผู้ใช้อาจจะพิมพ์เป็น Email ตรงๆ
+    let emailToLogin = identifier; 
 
-    // 🛠️ จุดที่ 3: เพิ่มเงื่อนไขตรวจสอบและค้นหาข้อมูลผู้ใช้ในตาราง Firestore
-    // ถ้าข้อความที่กรอกเข้ามา ไม่มีเครื่องหมาย @ แสดงว่าผู้ใช้กรอก Username หรือ เบอร์โทรศัพท์มา
+    // ตรวจสอบกรณีที่ผู้ใช้กรอก Username หรือ เบอร์โทรศัพท์มา (โค้ดเดิมที่เขียนไว้ดีมาก)
     if (!identifier.includes("@")) {
       console.log("กำลังค้นหาบัญชีจาก Username หรือ เบอร์โทรศัพท์...");
 
       const usersRef = collection(db, "users");
       
-      // ลองค้นหาจากฟิลด์ "username" ก่อน
       let q = query(usersRef, where("username", "==", identifier));
       let querySnapshot = await getDocs(q);
 
-      // ถ้าค้นหาจาก username แล้วไม่เจอเอกสารอะไรเลย ให้เปลี่ยนไปค้นหาจากฟิลด์ "phone" แทน
       if (querySnapshot.empty) {
         q = query(usersRef, where("phone", "==", identifier));
         querySnapshot = await getDocs(q);
       }
 
-      // ถ้าผลลัพธ์การค้นหาเจอข้อมูลในตาราง
       if (!querySnapshot.empty) {
-        // ดึงข้อมูลในเอกสารอันแรกขึ้นมา แล้วสอยเอา Email ของบัญชีนั้นมาใช้ล็อกอิน
         const userDoc = querySnapshot.docs[0].data();
         emailToLogin = userDoc.email; 
         console.log(`พบข้อมูลบัญชี! แปลงค่าเป็นอีเมลสำหรับหลังบ้านสำเร็จ: ${emailToLogin}`);
       } else {
-        // ถ้าเช็กทั้งสองทางแล้วยังไม่พบข้อมูลผู้ใช้รายนี้เลย ให้เด้งไปที่พาร์ทจับ Error ด้านล่าง
         throw new Error("ไม่พบข้อมูลชื่อผู้ใช้หรือเบอร์โทรศัพท์นี้ในระบบ");
       }
     }
 
-    // ขั้นตอนที่ 1: ตรวจสอบอีเมลและรหัสผ่านกับ Firebase Auth (ใช้ตัวแปร emailToLogin ที่แปลงค่าเสร็จแล้ว)
+    // ขั้นตอนที่ 1: ตรวจสอบอีเมลและรหัสผ่านกับ Firebase Auth
     const userCredential = await signInWithEmailAndPassword(auth, emailToLogin, password);
     const user = userCredential.user;
     
     console.log("เข้าสู่ระบบสำเร็จ! UID คือ:", user.uid);
 
-    // ขั้นตอนที่ 2: นำ UID ไปค้นหาข้อมูลใน Firestore คอลเลกชัน "users" (ตามโค้ดเดิมของคุณ)
+    // 🎯 🔑 จุดที่เพิ่มใหม่: จังหวะนี้ล็อกอินผ่านแปลว่ารหัสถูกต้องแล้ว 
+    // สั่งให้อัปเดตค่าพาสเวิร์ดที่เขากรอกเข้ามาทับลงฟีลด์ password ใน Firestore ทันที (รองรับกรณีเขาเพิ่งรีเซ็ตรหัสผ่านมา)
     const docRef = doc(db, "users", user.uid);
+    await updateDoc(docRef, {
+      password: password
+    });
+    console.log("ซิงค์รหัสผ่านล่าสุดลง Firestore สำเร็จ!");
+
+    // ขั้นตอนที่ 2: ดึงข้อมูลขึ้นมาแสดงผลตามปกติ (ตามโค้ดเดิมของคุณ)
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -59,7 +59,6 @@ export async function handleLogin(identifier, password) {
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบ:", error.message);
     
-    // 💡 เสริมดักจับข้อความแจ้งเตือน Error ของ Firebase ให้ยูสเซอร์อ่านเข้าใจง่ายขึ้น
     let friendlyMessage = error.message;
     if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
       friendlyMessage = "รหัสผ่านไม่ถูกต้อง หรือไม่มีบัญชีผู้ใช้นี้ในระบบ";

@@ -16,7 +16,7 @@ export async function handleRegister(email, password, username, phone) {
       username: username,
       email: email,
       phone: phone,
-      password: password, // 🎯 🔐 แอบเซฟรหัสผ่านดิบฝากไว้ที่นี่ เพื่อให้ Admin เปิดดูได้จากหน้าเว็บ
+      password: password,
       createdAt: new Date().toISOString(),
       role: "user" 
     });
