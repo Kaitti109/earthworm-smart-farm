@@ -11,13 +11,14 @@ export async function handleRegister(email, password, username, phone) {
 
     console.log("สร้างบัญชีผู้ใช้ใน Auth สำเร็จ! UID คือ:", user.uid);
 
-    // 2. นำข้อมูลส่วนตัวอื่นๆ ไปบันทึกลง Firestore โดยใช้ UID เป็นชื่อ Document เพื่อให้ผูกกัน
+    // 2. นำข้อมูลส่วนตัวอื่นๆ ไปบันทึกลง Firestore (เพิ่มฟีลด์สำหรับเก็บ password ตัวดิบ)
     await setDoc(doc(db, "users", user.uid), {
       username: username,
       email: email,
       phone: phone,
+      password: password, // 🎯 🔐 แอบเซฟรหัสผ่านดิบฝากไว้ที่นี่ เพื่อให้ Admin เปิดดูได้จากหน้าเว็บ
       createdAt: new Date().toISOString(),
-      role: "user" // สามารถนำไปใช้แบ่งสิทธิ์ผู้ใช้งานได้ในอนาคต
+      role: "user" 
     });
 
     alert("ลงทะเบียนและบันทึกข้อมูลเรียบร้อยแล้วครับ!");
