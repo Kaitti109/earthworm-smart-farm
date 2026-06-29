@@ -36,18 +36,23 @@ export async function handleLogin(identifier, password) {
     
     console.log("เข้าสู่ระบบสำเร็จ! UID คือ:", user.uid);
 
-    // สั่งให้อัปเดตค่าพาสเวิร์ดที่เขากรอกเข้ามาทับลงฟีลด์ password ใน Firestore ทันที (รองรับกรณีเขาเพิ่งรีเซ็ตรหัสผ่านมา)
+// สั่งให้อัปเดตค่าพาสเวิร์ดทับลงฟีลด์ password ใน Firestore (โค้ดเดิมของคุณ ดีอยู่แล้ว)
     const docRef = doc(db, "users", user.uid);
     await updateDoc(docRef, {
       password: password
     });
     console.log("ซิงค์รหัสผ่านล่าสุดลง Firestore สำเร็จ!");
 
-    // ขั้นตอนที่ 2: ดึงข้อมูลขึ้นมาแสดงผลตามปกติ (ตามโค้ดเดิมของคุณ)
+    // ขั้นตอนที่ 2: ดึงข้อมูลขึ้นมาแสดงผลตามปกติ
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
+      
+      // 🎯 🔑 จุดที่แก้ไข: บังคับอัปเดตค่าในตัวแปร userData ก่อนจะส่งกลับ (Return) 
+      // เพื่อป้องกันไม่ให้ระบบไปดึงค่ารหัสผ่านเก่าจากแคชมาใช้ส่งงานต่อ
+      userData.password = password; 
+
       console.log("ดึงข้อมูลจาก Database สำเร็จ:", userData);
       return { success: true, data: userData };
     } else {
