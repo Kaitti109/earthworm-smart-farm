@@ -36,7 +36,6 @@ export async function handleLogin(identifier, password) {
     
     console.log("เข้าสู่ระบบสำเร็จ! UID คือ:", user.uid);
 
-    // 🎯 🔑 จุดที่เพิ่มใหม่: จังหวะนี้ล็อกอินผ่านแปลว่ารหัสถูกต้องแล้ว 
     // สั่งให้อัปเดตค่าพาสเวิร์ดที่เขากรอกเข้ามาทับลงฟีลด์ password ใน Firestore ทันที (รองรับกรณีเขาเพิ่งรีเซ็ตรหัสผ่านมา)
     const docRef = doc(db, "users", user.uid);
     await updateDoc(docRef, {
