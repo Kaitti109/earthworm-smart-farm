@@ -83,6 +83,31 @@
 
 </div>
 
+<div id="history" class="history-container" style="margin-top: 40px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+    <div style="margin-bottom: 15px;">
+        <h3 style="margin: 0; color: #0f172a; font-size: 18px; font-weight: 700;">📋 ตารางบันทึกประวัติข้อมูลเซนเซอร์</h3>
+        <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">แสดงรายการบันทึกย้อนหลัง 10 ครั้งล่าสุดจากระบบฟาร์มไส้เดือนอัจฉริยะ</p>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+            <thead>
+                <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                    <th style="padding: 12px 16px; color: #475569; font-weight: 600;">🕒 วันที่ - เวลา</th>
+                    <th style="padding: 12px 16px; color: #ef4444; font-weight: 600;">🌡️ อุณหภูมิ (°C)</th>
+                    <th style="padding: 12px 16px; color: #3b82f6; font-weight: 600;">💧 ความชื้น (%)</th>
+                    <th style="padding: 12px 16px; color: #0d9488; font-weight: 600;">🧪 ค่าความเป็นกรด-ด่าง (pH)</th>
+                </tr>
+            </thead>
+            <tbody id="historyTableBody">
+                <tr>
+                    <td colspan="4" style="padding: 20px; text-align: center; color: #94a3b8;">⏳ กำลังโหลดประวัติข้อมูล...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <script type="module">
     import { checkUserLogin, logoutUser, sendUserControlCommand } from "./src/dashboard.js";
     // 🚀 นำเข้า rtdb และเครื่องมือดักฟังแบบเรียลไทม์จากระบบ Firebase หลัก
@@ -142,9 +167,9 @@
         }
     });
 
-    // 📊 ฟังก์ชันดึงประวัติ Log จาก Firebase มารองรับระบบพลอตกราฟสถิติย้อนหลัง
+    // 📊 ฟังก์ชันดึงประวัติ Log จาก Firebase มารองรับระบบพลอตกราฟและตารางประวัติย้อนหลัง
     function startLoadingSensorCharts(userUid) {
-        // จำกัดสถิติให้อ่านค่ามาแค่ 10 รอบบันทึกล่าสุดเพื่อความสวยงามสมส่วนของเส้นกราฟ
+        // จำกัดสถิติให้อ่านค่ามาแค่ 10 รอบบันทึกล่าสุดเพื่อความสวยงามสมส่วน
         const logsRef = query(ref(rtdb, `users_farms/${userUid}/sensor_logs`), limitToLast(10));
 
         onValue(logsRef, (snapshot) => {
@@ -155,31 +180,70 @@
             const moistData = [];
             const phData = []; 
 
+            // ตัวแปรสำหรับสร้างแถวของตาราง HTML
+            let tableRowsHtml = "";
+
             if (logsData) {
+                // ดึงคีย์ของข้อมูลมาแล้วสลับด้าน (Reverse) เพื่อเอาค่าใหม่ล่าสุดขึ้นบรรทัดแรกในตาราง
+                const logKeys = Object.keys(logsData).reverse();
+
+                // วนลูปสำหรับพลอตกราฟ (อาเรย์ของกราฟใช้ลำดับปกติ)
                 Object.keys(logsData).forEach((key) => {
                     const log = logsData[key];
-                    
-                    // แปลงเวลา Timestamp ของ Firebase เซิร์ฟเวอร์ออกมาเป็นหน่วยชั่วโมง:นาที
                     let timeString = "รอบบันทึก";
                     if (log.time) {
                         const date = new Date(log.time);
                         timeString = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
                     }
-                    
                     timeLabels.push(timeString);
                     tempData.push(log.temp || 0);
                     moistData.push(log.moist || 0);
-                    
-                    // หากยังไม่ได้เพิ่มเซนเซอร์ pH บนบอร์ด จะทำการดันค่ากลาง 7.0 ขึ้นมารอบนกราฟสแตนด์บายก่อน
                     phData.push(log.ph !== undefined ? log.ph : 7.0); 
+                });
+
+                // วนลูปสร้างแถวในตาราง (ใช้กุญแจที่สลับเอาล่าสุดขึ้นก่อน)
+                logKeys.forEach((key) => {
+                    const log = logsData[key];
+                    
+                    // แปลงเวลาให้สมบูรณ์ขึ้นโชว์ในตาราง (วันที่และเวลา)
+                    let fullDateTime = "ไม่ระบุเวลา";
+                    if (log.time) {
+                        const date = new Date(log.time);
+                        fullDateTime = `${date.toLocaleDateString('th-TH')} - ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')} น.`;
+                    }
+
+                    const tVal = log.temp !== undefined ? `${log.temp.toFixed(1)} °C` : '--';
+                    const mVal = log.moist !== undefined ? `${log.moist.toFixed(1)} %` : '--';
+                    const pVal = log.ph !== undefined ? log.ph.toFixed(1) : '7.0 (สแตนด์บาย)';
+
+                    // แปะแท็กแถวตาราง <tr> 
+                    tableRowsHtml += `
+                        <tr style="border-bottom: 1px solid #f1f5f9; hover { background-color: #f8fafc; }">
+                            <td style="padding: 12px 16px; color: #334155; font-weight: 500;">${fullDateTime}</td>
+                            <td style="padding: 12px 16px; color: #dc2626;">${tVal}</td>
+                            <td style="padding: 12px 16px; color: #2563eb;">${mVal}</td>
+                            <td style="padding: 12px 16px; color: #0d9488;">${pVal}</td>
+                        </tr>
+                    `;
                 });
 
                 // ส่งค่าอาเรย์ทั้งหมดไปสร้างและจัดการวาดกราฟบน Canvas
                 renderCharts(timeLabels, tempData, moistData, phData);
+
+                // 🎯 สั่งนำแถวตารางที่สร้างเสร็จแล้วไปฝังลงในตาราง HTML หน้าเว็บ
+                const tableBody = document.getElementById("historyTableBody");
+                if (tableBody) {
+                    tableBody.innerHTML = tableRowsHtml;
+                }
+            } else {
+                // กรณีไม่มี Log ข้อมูลเลย
+                const tableBody = document.getElementById("historyTableBody");
+                if (tableBody) {
+                    tableBody.innerHTML = `<tr><td colspan="4" style="padding: 20px; text-align: center; color: #94a3b8;">❌ ยังไม่มีประวัติการบันทึกข้อมูลย้อนหลัง</td></tr>`;
+                }
             }
         });
     }
-
     // 🎨 ฟังก์ชันตั้งค่าและประกอบกราฟแต่ละประเภทผ่านโครงสร้าง Chart.js
     function renderCharts(labels, tempVals, moistVals, phVals) {
         const ctxTemp = document.getElementById('tempChart')?.getContext('2d');
