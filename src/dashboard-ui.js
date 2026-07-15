@@ -182,7 +182,7 @@ function renderCharts(labels, tempVals, moistVals, phVals) {
     });
 }
 
-// 🎯 🚀 ฟังก์ชันเปิดโชว์กราฟแยกทีละชิ้นตามตัวที่คลิกเลือก
+// 🎯 ฟังก์ชันเปิดโชว์กราฟแยกทีละชิ้นตามตัวที่คลิกเลือก
 function showSpecificChart(sensorType) {
     const chartsSection = document.getElementById("chartsSection");
     const historySection = document.getElementById("history");
@@ -215,9 +215,8 @@ function showSpecificChart(sensorType) {
     }
 }
 
-// ผูก Event
-document.getElementById("historyMenuBtn")?.addEventListener("click", (e) => {
-    e.preventDefault();
+// 🎯 แก้ไขกลไกการคลิกปุ่มประวัติย้อนหลัง (เอา e.preventDefault ออกเนื่องจากเปลี่ยนเป็นปุ่มปกติแล้ว)
+document.getElementById("historyMenuBtn")?.addEventListener("click", () => {
     showSpecificChart('all');
 });
 

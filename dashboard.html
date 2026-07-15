@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - ระบบฟาร์มอัจฉริยะ</title>
-    
     <link rel="stylesheet" href="./css/dashboard.css">
 </head>
 <body>
@@ -15,7 +14,8 @@
         
         <ul class="nav-menu">
             <li><a href="./dashboard.html" class="active">📊 หน้าหลัก</a></li>
-            <li><button id="historyMenuBtn" style="background: none; border: none; color: inherit; font: inherit; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 4px;">📈 ประวัติย้อนหลัง</button></li>
+            <!-- 🎯 เพิ่ม class="history-link" เพื่อเคลียร์บั๊ก CSS Dropdown -->
+            <li><a href="./history.html" class="history-link" id="historyMenuBtn">📈 ประวัติย้อนหลัง</a></li>
             <li><a href="./admin.html" id="adminMenuBtn" class="admin-link">🛡️ จัดการระบบ (Admin)</a></li>
         </ul>
 
@@ -46,68 +46,22 @@
         </div>
     </div>
 
-    <!-- 🎯 การ์ดเซนเซอร์ 3 ใบด้านบน -->
     <div class="grid">
-        <div id="clickTempCard" class="card temp-color" style="cursor: pointer;">
+        <div class="card temp-color">
             <h3>อุณหภูมิ (Temperature)</h3>
             <div class="value"><span id="tempVal">--</span> °C</div>
         </div>
-        <div id="clickMoistCard" class="card humidity-color" style="cursor: pointer;">
+        <div class="card humidity-color">
             <h3>ความชื้น (Moisture)</h3>
             <div class="value"><span id="humidityVal">--</span> %</div>
         </div>
-        <div id="clickPhCard" class="card ph-color" style="cursor: pointer;">
+        <div class="card ph-color">
             <h3>ค่าความเป็นกรด-ด่าง (pH)</h3>
             <div class="value">pH <span id="phVal">--</span></div>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- 🎯 กล่องกราฟ 3 ใบอยู่ครบ (ซ่อนเริ่มต้น รอกดสลับตัวชี้เฉพาะเจาะจง) -->
-<div id="chartsSection" class="charts-container" style="display: none; margin-top: 30px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 0 20px;">
-    <div id="tempChartCard" class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-        <h4 style="margin-top:0; color: #1e293b;">📈 สถิติตัวเลขภูมิอากาศ (อุณหภูมิ)</h4>
-        <canvas id="tempChart"></canvas>
-    </div>
-    <div id="moistChartCard" class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-        <h4 style="margin-top:0; color: #1e293b;">📉 สถิติความชื้นมูลไส้เดือน</h4>
-        <canvas id="moistChart"></canvas>
-    </div>
-    <div id="phChartCard" class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-        <h4 style="margin-top:0; color: #0d9488;">🧪 สถิติค่าความเป็นกรด-ด่าง (pH)</h4>
-        <canvas id="phChart"></canvas>
-    </div>
-</div>
-
-<!-- 🎯 กล่องตารางรายงานข้อมูลดิบ 10 แถวล่าสุด อยู่ครบถ้วน -->
-<div id="history" class="history-container" style="display: none; margin: 40px 20px 20px 20px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-    <div style="margin-bottom: 15px;">
-        <h3 style="margin: 0; color: #0f172a; font-size: 18px; font-weight: 700;">📋 ตารางบันทึกประวัติข้อมูลเซนเซอร์</h3>
-        <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">แสดงรายการบันทึกย้อนหลัง 10 ครั้งล่าสุดจากระบบฟาร์มไส้เดือนอัจฉริยะ</p>
-    </div>
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
-            <thead>
-                <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                    <th style="padding: 12px 16px; color: #475569; font-weight: 600;">🕒 วันที่ - เวลา</th>
-                    <th style="padding: 12px 16px; color: #ef4444; font-weight: 600;">🌡️ อุณหภูมิ (°C)</th>
-                    <th style="padding: 12px 16px; color: #3b82f6; font-weight: 600;">💧 ความชื้น (%)</th>
-                    <th style="padding: 12px 16px; color: #0d9488; font-weight: 600;">🧪 ค่าความเป็นกรด-ด่าง (pH)</th>
-                </tr>
-            </thead>
-            <tbody id="historyTableBody">
-                <tr>
-                    <td colspan="4" style="padding: 20px; text-align: center; color: #94a3b8;">⏳ กำลังโหลดประวัติข้อมูล...</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- 🚀 ลิงก์ยิงหาไฟล์ JavaScript แยกชิ้นภายนอกตัวจริง -->
 <script type="module" src="./src/dashboard-ui.js"></script>
-
 </body>
 </html>
