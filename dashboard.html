@@ -15,7 +15,7 @@
         
         <ul class="nav-menu">
             <li><a href="./dashboard.html" class="active">📊 หน้าหลัก</a></li>
-            <!-- 🎯 เพิ่มปุ่มเมนูประวัติย้อนหลังพร้อมใส่ ID สำหรับใช้คลิกดักเปิดกราฟ -->
+            <!-- 🎯 ปุ่มประวัติย้อนหลังด้านบน ตั้งให้เปิดโชว์กราฟทุกตัวร่วมกันทีเดียว -->
             <li><a href="#history" id="historyMenuBtn">📈 ประวัติย้อนหลัง</a></li>
             <li><a href="./admin.html" id="adminMenuBtn" class="admin-link">🛡️ จัดการระบบ (Admin)</a></li>
         </ul>
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <!-- 🎯 เติม id="click...Card" และตั้ง cursor: pointer เพื่อให้กดที่การ์ดแล้วเปิดกราฟได้ -->
+    <!-- 🎯 ผูก ID ที่การ์ดเซนเซอร์แต่ละใบ เพื่อเตรียมดักฟังคลิกสลับกราฟ -->
     <div class="grid">
         <div id="clickTempCard" class="card temp-color" style="cursor: pointer;">
             <h3>อุณหภูมิ (Temperature)</h3>
@@ -66,27 +66,30 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- 🎯 1. ซ่อนโซนกราฟไว้เริ่มต้นด้วยการใส่ display: none; และผูก id="chartsSection" -->
+<!-- 🎯 ซ่อนโซนภาพรวมกราฟไว้ตั้งแต่ต้น (display: none;) และผูกไอดีการ์ดกราฟย่อยแต่ละใบ -->
 <div id="chartsSection" class="charts-container" style="display: none; margin-top: 30px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 0 20px;">
     
-    <div class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <!-- 📈 กราฟย่อยอุณหภูมิ -->
+    <div id="tempChartCard" class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
         <h4 style="margin-top:0; color: #1e293b;">📈 สถิติตัวเลขภูมิอากาศ (อุณหภูมิ)</h4>
         <canvas id="tempChart"></canvas>
     </div>
     
-    <div class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <!-- 📉 กราฟย่อยความชื้น -->
+    <div id="moistChartCard" class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
         <h4 style="margin-top:0; color: #1e293b;">📉 สถิติความชื้นมูลไส้เดือน</h4>
         <canvas id="moistChart"></canvas>
     </div>
 
-    <div class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <!-- 🧪 กราฟย่อยค่า pH -->
+    <div id="phChartCard" class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
         <h4 style="margin-top:0; color: #0d9488;">🧪 สถิติค่าความเป็นกรด-ด่าง (pH)</h4>
         <canvas id="phChart"></canvas>
     </div>
 
 </div>
 
-<!-- 🎯 2. ซ่อนโซนตารางไว้เริ่มต้นด้วยการใส่ display: none; ไว้ในสไตล์ -->
+<!-- 🎯 ซ่อนโซนตารางประวัติข้อมูลไว้เริ่มต้นเช่นกัน -->
 <div id="history" class="history-container" style="display: none; margin: 40px 20px 20px 20px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
     <div style="margin-bottom: 15px;">
         <h3 style="margin: 0; color: #0f172a; font-size: 18px; font-weight: 700;">📋 ตารางบันทึกประวัติข้อมูลเซนเซอร์</h3>
@@ -157,12 +160,12 @@
                 }
             });
 
-            // 📊 🚀 3. ดักฟังประวัติการบันทึก Log ย้อนหลัง
+            // 📊 🚀 3. ดักฟังประวัติการบันทึก Log ย้อนหลังเพื่อรอวาดกราฟและตาราง
             startLoadingSensorCharts(userData.uid);
         }
     });
 
-    // 📊 ฟังก์ชันดึงประวัติ Log จาก Firebase มารองรับระบบพลอตกราฟและตารางประวัติย้อนหลัง
+    // 📊 ฟังก์ชันดึงประวัติ Log จาก Firebase
     function startLoadingSensorCharts(userUid) {
         const logsRef = query(ref(rtdb, `users_farms/${userUid}/sensor_logs`), limitToLast(10));
 
@@ -194,7 +197,6 @@
 
                 logKeys.forEach((key) => {
                     const log = logsData[key];
-                    
                     let fullDateTime = "ไม่ระบุเวลา";
                     if (log.time) {
                         const date = new Date(log.time);
@@ -230,7 +232,7 @@
         });
     }
 
-    // 🎨 ฟังก์ชันตั้งค่าและประกอบกราฟแต่ละประเภทผ่านโครงสร้าง Chart.js
+    // 🎨 ฟังก์ชันจัดการโครงสร้างเส้นกราฟ Chart.js
     function renderCharts(labels, tempVals, moistVals, phVals) {
         const ctxTemp = document.getElementById('tempChart')?.getContext('2d');
         const ctxMoist = document.getElementById('moistChart')?.getContext('2d');
@@ -298,30 +300,54 @@
         });
     }
 
-    // 🎯 🚀 ฟังก์ชันสำหรับกดเปิดโชว์กราฟและตารางประวัติพร้อมกัน
-    function showChartsAndHistory() {
+    // 🎯 🚀 [ฟังก์ชันหลักสั่งเปิดโชว์กราฟแยกทีละชิ้นตามตัวที่คลิกเลือก]
+    function showSpecificChart(sensorType) {
         const chartsSection = document.getElementById("chartsSection");
         const historySection = document.getElementById("history");
+        
+        const tempCard = document.getElementById("tempChartCard");
+        const moistCard = document.getElementById("moistChartCard");
+        const phCard = document.getElementById("phChartCard");
 
         if (chartsSection && historySection) {
+            // เปิดโครงสร้างภายนอกและตัวตารางขึ้นมาทำหน้าที่พื้นหลังก่อน
             chartsSection.style.display = "grid";
             historySection.style.display = "block";
-            
-            // เลื่อนหน้าจอลงมาโฟกัสที่ตัวกราฟแบบนุ่มนวล
+
+            // สั่งเครียล์ซ่อนทุกการ์ดกราฟย่อยออกไปก่อน
+            tempCard.style.display = "none";
+            moistCard.style.display = "none";
+            phCard.style.display = "none";
+
+            // สั่งเปิดทำงานเฉพาะแท็บกราฟตัวที่เราประสงค์จะใช้งาน
+            if (sensorType === 'temp') {
+                tempCard.style.display = "block";
+            } else if (sensorType === 'moist') {
+                moistCard.style.display = "block";
+            } else if (sensorType === 'ph') {
+                phCard.style.display = "block";
+            } else if (sensorType === 'all') {
+                // กรณีคลิกจากเมนูแถบด้านบนของ Navbar ให้เปิดแสดงกราฟทุกตัวพร้อมกันเหมือนปกติ
+                tempCard.style.display = "block";
+                moistCard.style.display = "block";
+                phCard.style.display = "block";
+            }
+
+            // เลื่อนหน้าต่างโฟกัสเล็งเป้าลงมาหาโซนรายงานกราฟแบบนิ่มนวล
             chartsSection.scrollIntoView({ behavior: 'smooth' });
         }
     }
 
-    // ผูก Event ให้กับเมนู Navbar
+    // ผูกปุ่มกดเปิดจาก Navbar ด้านบน
     document.getElementById("historyMenuBtn")?.addEventListener("click", (e) => {
         e.preventDefault();
-        showChartsAndHistory();
+        showSpecificChart('all');
     });
 
-    // ผูก Event ให้กดคลิกเปิดจากตัวการ์ดเซนเซอร์ทั้ง 3 ใบ
-    document.getElementById("clickTempCard")?.addEventListener("click", showChartsAndHistory);
-    document.getElementById("clickMoistCard")?.addEventListener("click", showChartsAndHistory);
-    document.getElementById("clickPhCard")?.addEventListener("click", showChartsAndHistory);
+    // 🎯 ผูก Event สั่งงานเปิดกราฟแยกชิ้นตามช่องการ์ดตัวเลขด้านบน
+    document.getElementById("clickTempCard")?.addEventListener("click", () => showSpecificChart('temp'));
+    document.getElementById("clickMoistCard")?.addEventListener("click", () => showSpecificChart('moist'));
+    document.getElementById("clickPhCard")?.addEventListener("click", () => showSpecificChart('ph'));
 
     // 🚀 4. ผูกเหตุการณ์คลิกปุ่มควบคุมปั๊มน้ำ
     document.getElementById("userPumpOnBtn").addEventListener("click", async () => {
