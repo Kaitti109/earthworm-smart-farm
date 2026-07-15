@@ -1,5 +1,6 @@
-import { checkUserLogin, logoutUser } from "./dashboard.js";
-import { rtdb } from "./firebase.js";
+// 🎯 แก้ไขเพิ่ม .. เพื่อถอย Path ออกไปหาไฟล์ระบบหลักที่อยู่ด้านนอกโฟลเดอร์ src
+import { checkUserLogin, logoutUser } from "../dashboard.js";
+import { rtdb } from "../firebase.js";
 import { ref, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 let tempChartInstance = null;
