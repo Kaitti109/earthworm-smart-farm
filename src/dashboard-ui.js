@@ -1,4 +1,4 @@
- import { checkUserLogin, sendUserControlCommand, logoutUser } from "../dashboard.js";
+import { checkUserLogin, sendUserControlCommand, logoutUser } from "../dashboard.js";
 import { rtdb } from "../firebase.js";
 import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -14,7 +14,7 @@ checkUserLogin((userData) => {
             document.getElementById("adminMenuBtn").style.display = "none";
         }
 
-        // 🚀 2. ดักฟังเฉพาะค่าการ์ดปัจจุบัน (Current Card) เพื่ออัปเดตตัวเลขสดบนหน้าจอ
+        // 📡 2. ดักฟังเฉพาะค่าเซนเซอร์ปัจจุบัน (Current) มาอัปเดตตัวเลขสดบนหน้าจอ
         const currentSensorRef = ref(rtdb, `users_farms/${userData.uid}/current`);
         
         onValue(currentSensorRef, (snapshot) => {
@@ -40,7 +40,7 @@ checkUserLogin((userData) => {
     }
 });
 
-// 🚀 3. ผูกเหตุการณ์คลิกปุ่มควบคุมปั๊มน้ำ (Manual Control)
+// 💧 3. ผูกเหตุการณ์คลิกปุ่มควบคุมปั๊มน้ำไดอะแฟรม
 document.getElementById("userPumpOnBtn").addEventListener("click", async () => {
     if (currentLoggedUid) {
         document.getElementById("userPumpStatus").innerText = "⚡ กำลังส่งคำสั่งเปิด...";
@@ -55,7 +55,7 @@ document.getElementById("userPumpOffBtn").addEventListener("click", async () => 
     }
 });
 
-// 4. ตั้งค่าปุ่มออกจากระบบ (Logout)
+// 4. ปุ่มออกจากระบบ (Logout)
 document.getElementById("logoutBtn").addEventListener("click", () => {
     logoutUser();
 });
