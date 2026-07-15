@@ -1,5 +1,5 @@
-import { checkUserLogin, sendUserControlCommand, logoutUser } from "../dashboard.js";
-import { rtdb } from "../firebase.js";
+import { checkUserLogin, sendUserControlCommand, logoutUser } from "./dashboard.js";
+import { rtdb } from "./firebase.js";
 import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 let currentLoggedUid = "";
