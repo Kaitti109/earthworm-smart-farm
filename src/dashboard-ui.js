@@ -8,7 +8,7 @@ let tempChartInstance = null;
 let moistChartInstance = null;
 let phChartInstance = null;
 
-// 1. ตรวจสอบสถานะการล็อกอินและซ่อนเมนูแอดมิน
+
 checkUserLogin((userData) => {
     if (userData) {
         currentLoggedUid = userData.uid; 
