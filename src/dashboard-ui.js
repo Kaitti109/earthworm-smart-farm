@@ -107,7 +107,7 @@ function renderCharts(labels, tempVals, moistVals, phVals) {
     });
 }
 
-// 🎯 ฟังก์ชัน Toggle เปิด/ปิด กราฟแบบกดซ้ำเพื่อซ่อน
+// 🎯 ฟังก์ชัน Toggle แสดงผลทันทีเมื่อกด และค่อยๆ จางหาย (Fade Out) เมื่อกดซ่อน
 function toggleChart(sensorType) {
     const tempCard = document.getElementById("tempChartCard");
     const moistCard = document.getElementById("moistChartCard");
@@ -120,14 +120,27 @@ function toggleChart(sensorType) {
 
     if (!targetCard) return;
 
-    // สลับคลาส show เพื่อเล่น Animation พับเก็บ/คลี่กาง
-    targetCard.classList.toggle("show");
+    // เช็คว่าปัจจุบันซ่อนอยู่ หรือเปิดอยู่
+    const isHidden = window.getComputedStyle(targetCard).display === "none";
 
-    // ถ้ามีการเปิดกราฟตัวไหนไว้ ให้เลื่อนหน้าจอลงมาดูอย่างสมูท
-    if (targetCard.classList.contains("show")) {
+    if (isHidden) {
+        // 🟢 เปิดกราฟทันที พร้อมใส่ Animation จางขึ้นมาอย่างนุ่มนวล
+        targetCard.style.display = "block";
+        targetCard.style.opacity = "1";
+        targetCard.style.transform = "translateY(0)";
+        targetCard.classList.add("fade-in");
+        
+        // เลื่อนหน้าจอลงมาดูอย่างสมูท
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+        // 🔴 ปิดซ่อน: ค่อยๆ จางลง (Fade Out) ก่อนที่จะสั่ง display = "none"
+        targetCard.classList.remove("fade-in");
+        targetCard.style.opacity = "0";
+        targetCard.style.transform = "translateY(-10px)";
+        
         setTimeout(() => {
-            targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 150);
+            targetCard.style.display = "none";
+        }, 250); // รอเล่น Animation ให้จบ 0.25 วินาทีแล้วค่อยซ่อน
     }
 }
 
