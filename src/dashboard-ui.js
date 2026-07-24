@@ -109,7 +109,6 @@ function renderCharts(labels, tempVals, moistVals, phVals) {
 
 // 🎯 ฟังก์ชัน Toggle เปิด/ปิด กราฟแบบกดซ้ำเพื่อซ่อน
 function toggleChart(sensorType) {
-    const chartsSection = document.getElementById("chartsSection");
     const tempCard = document.getElementById("tempChartCard");
     const moistCard = document.getElementById("moistChartCard");
     const phCard = document.getElementById("phChartCard");
@@ -121,24 +120,14 @@ function toggleChart(sensorType) {
 
     if (!targetCard) return;
 
-    // เช็คว่าปัจจุบันเปิดอยู่หรือซ่อนอยู่
-    if (targetCard.style.display === "none" || targetCard.style.display === "") {
-        targetCard.style.display = "block"; // ถ้าซ่อนอยู่ -> สั่งเปิด
-    } else {
-        targetCard.style.display = "none";  // ถ้าเปิดอยู่ -> สั่งปิด (ซ่อน)
-    }
+    // สลับคลาส show เพื่อเล่น Animation พับเก็บ/คลี่กาง
+    targetCard.classList.toggle("show");
 
-    // ตรวจสอบว่ามีกราฟใบไหนถูกเปิดอยู่บ้างไหม ถ้าปิดหมดทุกใบ ให้ซ่อนคอนเทนเนอร์ใหญ่ด้วย
-    const isAnyVisible = (tempCard.style.display !== "none") || 
-                         (moistCard.style.display !== "none") || 
-                         (phCard.style.display !== "none");
-
-    if (isAnyVisible) {
-        chartsSection.style.display = "grid";
-        // สไลด์หน้าจอลงมาดูเบาๆ เมื่อเปิดใช้งาน
-        chartsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    } else {
-        chartsSection.style.display = "none";
+    // ถ้ามีการเปิดกราฟตัวไหนไว้ ให้เลื่อนหน้าจอลงมาดูอย่างสมูท
+    if (targetCard.classList.contains("show")) {
+        setTimeout(() => {
+            targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
     }
 }
 
