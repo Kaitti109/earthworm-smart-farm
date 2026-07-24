@@ -1,7 +1,11 @@
+/* ==========================================
+   📚 KNOWLEDGE BASE STYLES
+   ========================================== */
 
+/* 🎯 โครงสร้าง Grid และ การ์ด */
 .knowledge-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 20px;
     margin-top: 25px;
 }
@@ -13,6 +17,9 @@
     border: 1px solid #e2e8f0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .knowledge-card:hover {
@@ -28,7 +35,7 @@
     gap: 8px;
 }
 
-/* 🏷️ ป้ายกำกับหมวดหมู่ (Tags) */
+/* 🏷️ ป้ายกำกับหมวดหมู่ (Badges / Tags) */
 .tag {
     display: inline-block;
     padding: 4px 10px;
@@ -36,32 +43,37 @@
     font-size: 12px;
     font-weight: 600;
     margin-bottom: 10px;
+    width: fit-content;
 }
 
-.tag-temp { 
-    background: #fee2e2; 
-    color: #dc2626; 
+.tag-breed { background: #ffedd5; color: #ea580c; }
+.tag-breed-rate { background: #dcfce7; color: #15803d; }
+.tag-temp { background: #fee2e2; color: #dc2626; }
+.tag-moist { background: #dbeafe; color: #2563eb; }
+.tag-ph { background: #ccfbf1; color: #0d9488; }
+.tag-tip { background: #fef3c7; color: #d97706; }
+.tag-ref { background: #f1f5f9; color: #475569; }
+
+/* 📖 สไตล์การ์ดอ้างอิงตรงกลางด้านล่างสุด */
+.reference-card-center {
+    grid-column: 1 / -1; /* สั่งให้ยืดเต็มแถวตรงกลาง */
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    text-align: center;
+    align-items: center;
+    margin-top: 10px;
 }
 
-.tag-moist { 
-    background: #dbeafe; 
-    color: #2563eb; 
+.reference-card-center ol {
+    display: inline-block;
+    text-align: left;
+    padding-left: 20px;
+    margin: 10px auto 0 auto;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.8;
 }
 
-.tag-ph { 
-    background: #ccfbf1; 
-    color: #0d9488; 
-}
-
-.tag-tip { 
-    background: #fef3c7; 
-    color: #d97706; 
-}
-.tag-breed {
-    background: #ffedd5;
-    color: #ea580c;
-}
-.tag-breed-rate {
-    background: #dcfce7;
-    color: #15803d;
+.reference-card-center li {
+    margin-bottom: 6px;
 }
