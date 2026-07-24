@@ -36,7 +36,7 @@ checkUserLogin((userData) => {
             }
         });
 
-        // 2. ดึง Log ย้อนหลังมาวาดกราฟ 3 ตัว
+        // 2. ดึง Log ย้อนหลังสแตนด์บายไว้ให้พร้อมวาดกราฟ
         startLoadingSensorCharts(userData.uid);
     }
 });
@@ -106,6 +106,46 @@ function renderCharts(labels, tempVals, moistVals, phVals) {
         options: { responsive: true, scales: { y: { min: 0, max: 14 } } }
     });
 }
+
+// 🎯 ฟังก์ชัน Toggle เปิด/ปิด กราฟแบบกดซ้ำเพื่อซ่อน
+function toggleChart(sensorType) {
+    const chartsSection = document.getElementById("chartsSection");
+    const tempCard = document.getElementById("tempChartCard");
+    const moistCard = document.getElementById("moistChartCard");
+    const phCard = document.getElementById("phChartCard");
+
+    let targetCard = null;
+    if (sensorType === 'temp') targetCard = tempCard;
+    if (sensorType === 'moist') targetCard = moistCard;
+    if (sensorType === 'ph') targetCard = phCard;
+
+    if (!targetCard) return;
+
+    // เช็คว่าปัจจุบันเปิดอยู่หรือซ่อนอยู่
+    if (targetCard.style.display === "none" || targetCard.style.display === "") {
+        targetCard.style.display = "block"; // ถ้าซ่อนอยู่ -> สั่งเปิด
+    } else {
+        targetCard.style.display = "none";  // ถ้าเปิดอยู่ -> สั่งปิด (ซ่อน)
+    }
+
+    // ตรวจสอบว่ามีกราฟใบไหนถูกเปิดอยู่บ้างไหม ถ้าปิดหมดทุกใบ ให้ซ่อนคอนเทนเนอร์ใหญ่ด้วย
+    const isAnyVisible = (tempCard.style.display !== "none") || 
+                         (moistCard.style.display !== "none") || 
+                         (phCard.style.display !== "none");
+
+    if (isAnyVisible) {
+        chartsSection.style.display = "grid";
+        // สไลด์หน้าจอลงมาดูเบาๆ เมื่อเปิดใช้งาน
+        chartsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+        chartsSection.style.display = "none";
+    }
+}
+
+// 🎯 ผูก Event ให้การ์ดด้านบน (กดครั้งแรกเปิด กดซ้ำปิด)
+document.getElementById("clickTempCard")?.addEventListener("click", () => toggleChart('temp'));
+document.getElementById("clickMoistCard")?.addEventListener("click", () => toggleChart('moist'));
+document.getElementById("clickPhCard")?.addEventListener("click", () => toggleChart('ph'));
 
 // ปุ่มควบคุมปั๊ม
 document.getElementById("userPumpOnBtn").addEventListener("click", async () => {
