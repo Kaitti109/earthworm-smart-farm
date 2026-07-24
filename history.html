@@ -27,31 +27,12 @@
 
 <div class="container">
     <div class="welcome-banner" style="margin-bottom: 25px;">
-        <h2>📊 รายงานและสถิติประวัติข้อมูลย้อนหลัง</h2>
-        <p>วิเคราะห์ข้อมูลกราฟและตารางบันทึกย้อนหลัง 10 ครั้งล่าสุดจากระบบเซนเซอร์ฟาร์มไส้เดือน</p>
+        <h2>📋 ตารางบันทึกประวัติข้อมูลเซนเซอร์</h2>
+        <p>แสดงรายการบันทึกย้อนหลัง 10 ครั้งล่าสุดจากระบบเซนเซอร์ฟาร์มไส้เดือน</p>
     </div>
 
-    <!-- 📊 โซนกราฟ 3 ตัว -->
-    <div class="charts-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 0 5px;">
-        <div class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <h4 style="margin-top:0; color: #1e293b;">📈 สถิติตัวเลขภูมิอากาศ (อุณหภูมิ)</h4>
-            <canvas id="tempChart"></canvas>
-        </div>
-        <div class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <h4 style="margin-top:0; color: #1e293b;">📉 สถิติความชื้นมูลไส้เดือน</h4>
-            <canvas id="moistChart"></canvas>
-        </div>
-        <div class="chart-card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <h4 style="margin-top:0; color: #0d9488;">🧪 สถิติค่าความเป็นกรด-ด่าง (pH)</h4>
-            <canvas id="phChart"></canvas>
-        </div>
-    </div>
-
-    <!-- 📋 โซนตารางประวัติ -->
-    <div class="history-container" style="margin-top: 30px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 20px;">
-        <div style="margin-bottom: 15px;">
-            <h3 style="margin: 0; color: #0f172a; font-size: 18px; font-weight: 700;">📋 ตารางบันทึกประวัติข้อมูลเซนเซอร์</h3>
-        </div>
+    <!-- 📋 เหลือเฉพาะโซนตารางประวัติ -->
+    <div class="history-container" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 20px;">
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
                 <thead>
@@ -72,7 +53,6 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="./src/history-ui.js"></script>
 </body>
 </html>
