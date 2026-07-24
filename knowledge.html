@@ -1,137 +1,153 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>คลังความรู้ - ระบบฟาร์มอัจฉริยะ</title>
-
-    <!-- 🚀 เรียก CSS แยกชิ้น -->
+    
+    <!-- 🚀 เรียกใช้ CSS แยกชิ้น -->
     <link rel="stylesheet" href="./css/dashboard.css">
     <link rel="stylesheet" href="./css/knowledge.css">
 </head>
-
 <body>
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand"> Smart Farm</div>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand"> Smart Farm</div>
+        
+        <ul class="nav-menu">
+            <li><a href="./dashboard.html">📊 หน้าหลัก</a></li>
+            <li><a href="./history.html">📈 ประวัติย้อนหลัง</a></li>
+            <li><a href="./knowledge.html" class="active">📚 คลังความรู้</a></li>
+            <li><a href="./admin.html" id="adminMenuBtn" class="admin-link">🛡️ จัดการระบบ (Admin)</a></li>
+        </ul>
 
-            <ul class="nav-menu">
-                <li><a href="./dashboard.html">📊 หน้าหลัก</a></li>
-                <li><a href="./history.html">📈 ประวัติย้อนหลัง</a></li>
-                <li><a href="./knowledge.html" class="active">📚 คลังความรู้</a></li>
-                <li><a href="./admin.html" id="adminMenuBtn" class="admin-link">🛡️ จัดการระบบ (Admin)</a></li>
-            </ul>
-
-            <div class="nav-user-zone">
-                <a href="./profile.html" style="color: inherit; text-decoration: none;" class="user-link-hover">
-                    <span class="user-greeting">สวัสดี, <strong id="userNameText">โหลด..</strong> 👤</span>
-                </a>
-                <button class="nav-logout-btn" id="logoutBtn">ออกจากระบบ</button>
-            </div>
+        <div class="nav-user-zone">
+            <a href="./profile.html" style="color: inherit; text-decoration: none;" class="user-link-hover">
+                <span class="user-greeting">สวัสดี, <strong id="userNameText">โหลด..</strong> 👤</span>
+            </a>
+            <button class="nav-logout-btn" id="logoutBtn">ออกจากระบบ</button>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <div class="container">
-        <div class="welcome-banner">
-            <h2>📚 ศูนย์ความรู้คู่มือการเลี้ยงไส้เดือนอัจฉริยะ</h2>
-            <p>รวบรวมเกร็ดความรู้และสภาวะแวดล้อมที่เหมาะสมที่สุดสำหรับผลิตปุ๋ยหมักมูลไส้เดือนคุณภาพสูง</p>
-        </div>
+<div class="container">
+    <div class="welcome-banner">
+        <h2>📚 ศูนย์ความรู้คู่มือการเลี้ยงไส้เดือนอัจฉริยะ</h2>
+        <p>รวบรวมข้อมูลสายพันธุ์ สภาพแวดล้อม อัตราการขยายพันธุ์ และแหล่งอ้างอิงทางวิชาการ</p>
+    </div>
 
-        <div class="knowledge-grid">
-
-            <div class="knowledge-card">
-                <span class="tag tag-breed">🐛 สายพันธุ์ไส้เดือน (AF)</span>
+    <div class="knowledge-grid">
+        
+        <!-- การ์ดที่ 1: สายพันธุ์ AF -->
+        <div class="knowledge-card">
+            <div>
+                <span class="tag tag-breed">🪱 สายพันธุ์ไส้เดือน (AF)</span>
                 <h3>African Nightcrawler (AF)</h3>
                 <p style="color: #475569; font-size: 14px; line-height: 1.6;">
-                    ไส้เดือนพันธุ์ยอดนิยมที่สุดสำหรับฟาร์มอัจฉริยะ
-                    เนื่องจากขยายพันธุ์เร็วและย่อยสลายขยะอินทรีย์ได้รวดเร็วมาก
+                    ไส้เดือนพันธุ์ยอดนิยมสำหรับฟาร์มอัจฉริยะ มีชื่อวิทยาศาสตร์ว่า <em>Eudrilus eugeniae</em> เนื่องจากโตไว กินเก่ง และผลิตปุ๋ยคุณภาพดีได้ปริมาณมาก
                 </p>
                 <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
-                    <li><strong>ลักษณะเด่น:</strong> ลำตัวสีด้ามขวาน/ม่วงเข้ม ตัวใหญ่ยาว เคลื่อนไหวรวดเร็ว</li>
+                    <li><strong>ลักษณะเด่น:</strong> ลำตัวสีม่วงเข้ม/น้ำตาลแดง ตัวใหญ่ยาว เคลื่อนไหวรวดเร็ว</li>
                     <li><strong>สภาพแวดล้อม:</strong> ชอบความชื้นสูง (70-80%) และอุณหภูมิอบอุ่น (25-30°C)</li>
-                    <li><strong>ข้อควรระวัง:</strong> พันธุ์ AF ตกใจง่าย หากอุณหภูมิร้อนจัดหรือเบดดิ้งแห้งเกินไป
-                        มีโอกาสไต่หนีออกจากเบดดิ้งสูงมาก</li>
+                    <li><strong>ข้อควรระวัง:</strong> ตกใจง่าย หากอุณหภูมิร้อนจัดหรือเบดดิ้งแห้งเกินไป จะหนีออกจากเบดดิ้งทันที</li>
                 </ul>
             </div>
+            <div class="reference-box">
+                <strong style="color: #334155;">📚 เอกสารอ้างอิง:</strong>
+                <ol>
+                    <li>Dominguez, J., & Edwards, C. A. (2011). <em>Biology and Ecology of Earthworm Species Used for Vermicomposting</em>. CRC Press.</li>
+                </ol>
+            </div>
+        </div>
 
-            <!-- การ์ดที่ 1: อุณหภูมิ -->
-            <div class="knowledge-card">
+        <!-- การ์ดที่ 2: ปริมาณการขยายพันธุ์ -->
+        <div class="knowledge-card">
+            <div>
+                <span class="tag tag-breed-rate">📈 ปริมาณการขยายพันธุ์</span>
+                <h3>อัตราการเจริญเติบโตและขยายพันธุ์</h3>
+                <p style="color: #475569; font-size: 14px; line-height: 1.6;">
+                    พันธุ์ AF ขยายพันธุ์เร็วมากเมื่ออยู่ในสภาพแวดล้อมที่ควบคุมอุณหภูมิและความชื้นอย่างเหมาะสม
+                </p>
+                <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
+                    <li><strong>ระยะโตเต็มวัย:</strong> ใช้เวลาเพียง 5 - 7 สัปดาห์ (40–50 วัน) เริ่มมีคอพอกพร้อมผสมพันธุ์</li>
+                    <li><strong>การวางถุงไข่ (Cocoon):</strong> ให้ถุงไข่ประมาณ <strong>2 - 3 ถุง/ตัว/สัปดาห์</strong></li>
+                    <li><strong>อัตราการฟัก:</strong> ไข่ใช้เวลาฟัก 12–15 วัน ได้ลูกไส้เดือน <strong>2 - 3 ตัว/ถุง</strong></li>
+                    <li><strong>การเพิ่มประชากร:</strong> เพิ่มจำนวนเป็น 2 เท่าได้ในทุกๆ <strong>2 - 3 เดือน</strong></li>
+                </ul>
+            </div>
+            <div class="reference-box">
+                <strong style="color: #334155;">📚 เอกสารอ้างอิง:</strong>
+                <ol>
+                    <li>Gajalakshmi, S., & Abbasi, S. A. (2004). <em>Neem leaves as a feed stock for vermicomposting by African nightcrawler Eudrilus eugeniae</em>. Bioresource Technology.</li>
+                    <li>กรมส่งเสริมการเกษตร กระทรวงเกษตรและสหกรณ์. <em>คู่มือการเลี้ยงไส้เดือนดินผลิตปุ๋ยหมักมูลไส้เดือน</em>.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- การ์ดที่ 3: อุณหภูมิ -->
+        <div class="knowledge-card">
+            <div>
                 <span class="tag tag-temp">🌡️ อุณหภูมิ (Temperature)</span>
                 <h3>ระดับอุณหภูมิที่เหมาะสม</h3>
                 <p style="color: #475569; font-size: 14px; line-height: 1.6;">
-                    อุณหภูมิที่เหมาะสมที่สุดสำหรับไส้เดือนดิน อยู่ในช่วง <strong>25°C - 30°C</strong>
+                    ระดับอุณหภูมิในเบดดิ้งที่เหมาะสมที่สุดสำหรับการเลี้ยงไส้เดือนดิน อยู่ในช่วง <strong>25°C - 30°C</strong>
                 </p>
                 <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
-                    <li>หากอุณหภูมิสูงกว่า 35°C ไส้เดือนจะเริ่มหนีออกนอกเบดดิ้งหรือตายได้</li>
-                    <li><strong>ข้อแนะนำ:</strong> หากอุณหภูมิสูงเกินไป ควรสั่งเปิดระบบพ่นหมอกเพื่อลดความร้อนสะสม</li>
+                    <li>หากอุณหภูมิเกิน 35°C ไส้เดือนจะเริ่มทนไม่ไหวและหนีออกจากเบดดิ้ง</li>
+                    <li><strong>ระบบอัจฉริยะ:</strong> เมื่อความร้อนสูงเกินไป ให้สั่งเปิดระบบพ่นหมอกเพื่อลดอุณหภูมิสะสม</li>
                 </ul>
             </div>
+        </div>
 
-            <!-- การ์ดที่ 2: ความชื้น -->
-            <div class="knowledge-card">
+        <!-- การ์ดที่ 4: ความชื้น -->
+        <div class="knowledge-card">
+            <div>
                 <span class="tag tag-moist">💧 ความชื้น (Moisture)</span>
                 <h3>การดูแลระดับความชื้น</h3>
                 <p style="color: #475569; font-size: 14px; line-height: 1.6;">
-                    ความชื้นเบดดิ้งที่เหมาะสมควรอยู่ที่ <strong>60% - 80%</strong> (ให้ความรู้สึกเหมือนฟองน้ำบิดหมาดๆ)
+                    ระดับความชื้นในเบดดิ้งที่เหมาะสมควรอยู่ที่ <strong>60% - 80%</strong> (ให้สัมผัสเหมือนฟองน้ำบิดหมาด)
                 </p>
                 <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
-                    <li>หากความชื้นต่ำกว่า 50% ไส้เดือนจะหายใจลำบาก (ไส้เดือนใช้ผิวหนังแลกเปลี่ยนออกซิเจน)</li>
-                    <li><strong>ข้อแนะนำ:</strong> สั่งเปิดปั๊มน้ำพ่นหมอกเพิ่มความชื้นผ่านแผงควบคุม Dashboard</li>
+                    <li>หากความชื้นต่ำกว่า 50% ไส้เดือนจะแลกเปลี่ยนออกซิเจนทางผิวหนังลำบาก</li>
+                    <li><strong>ระบบอัจฉริยะ:</strong> สามารถสั่งเปิดปั๊มน้ำพ่นหมอกผ่าน Dashboard เพื่อเติมความชื้นได้ทันที</li>
                 </ul>
             </div>
+        </div>
 
-            <!-- การ์ดที่ 3: pH -->
-            <div class="knowledge-card">
+        <!-- การ์ดที่ 5: ค่า pH -->
+        <div class="knowledge-card">
+            <div>
                 <span class="tag tag-ph">🧪 ค่ากรด-ด่าง (pH)</span>
                 <h3>ความเป็นกรด-ด่างที่สมดุล</h3>
                 <p style="color: #475569; font-size: 14px; line-height: 1.6;">
-                    ค่า pH ในพื้นที่เลี้ยงควรเป็นกลาง อยู่ในช่วงประมาณ <strong>6.5 - 7.5</strong>
+                    ค่า pH ในสภาพแวดล้อมเบดดิ้งควรเป็นกลาง อยู่ในช่วงประมาณ <strong>6.5 - 7.5</strong>
                 </p>
                 <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
-                    <li>ควรหลีกเลี่ยงเศษอาหารประเภทผลไม้รสเปรี้ยว ชาดำ หรือกาแฟปริมาณมากเกินไป</li>
-                    <li>หากเบดดิ้งเป็นกรดมากเกินไป อาจทำให้ไส้เดือนเกิดโรค Protein Bloat (ตัวพอง) ได้</li>
+                    <li>หลีกเลี่ยงเศษอาหารที่มีกรดสูง เช่น ผลไม้รสเปรี้ยว ชาดำ กาแฟ ในปริมาณมากเกินไป</li>
+                    <li>เบดดิ้งที่เป็นกรดจัด อาจทำให้เกิดอาการตัวพอง (Protein Bloat)</li>
                 </ul>
             </div>
-
-<div class="knowledge-card">
-                <span class="tag tag-breed-rate">📈 ปริมาณการขยายพันธุ์</span>
-                <h3>อัตราการเจริญเติบโตและขยายพันธุ์ (AF)</h3>
-                <p style="color: #475569; font-size: 14px; line-height: 1.6;">
-                    ไส้เดือนพันธุ์ AF ขึ้นชื่อเรื่องการขยายพันธุ์รวดเร็วเป็นอันดับต้นๆ เมื่อเทียบกับพันธุ์อื่น
-                </p>
-                <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
-                    <li><strong>ระยะโตเต็มวัย:</strong> ใช้เวลาประมาณ 5 - 8 สัปดาห์ (เริ่มมีคอพอกพร้อมผสมพันธุ์)</li>
-                    <li><strong>ปริมาณการให้ถุงไข่ (Cocoon):</strong> ไส้เดือน 1
-                        ตัวสามารถจับคู่ผสมพันธุ์และให้ถุงไข่ได้ประมาณ <strong>2 - 3 ถุงต่อสัปดาห์</strong></li>
-                    <li><strong>อัตราการฟักตัว:</strong> ไข่ 1 ถุงจะใช้เวลาฟัก 2 - 3 สัปดาห์
-                        และให้ลูกไส้เดือนออกมาประมาณ <strong>2 - 4 ตัวต่อถุง</strong></li>
-                    <li><strong>การเพิ่มจำนวนประตากระเชิง:</strong> ในสภาพแวดล้อมที่เหมาะสม (ความชื้น 70-80%
-                        และอาหารสมบูรณ์) ปริมาณไส้เดือนจะสามารถ<strong>เพิ่มขึ้นเป็น 2 เท่าได้ในทุกๆ 2 - 3
-                            เดือน</strong></li>
-                </ul>
-            </div>
-
-            <!-- การ์ดที่ 4: เทคนิคเพิ่มเติม -->
-            <div class="knowledge-card">
-                <span class="tag tag-tip">💡 เทคนิคเพิ่มเติม</span>
-                <h3>ข้อควรระวังการให้อาหาร</h3>
-                <p style="color: #475569; font-size: 14px; line-height: 1.6;">
-                    การจัดการอาหารและสภาพแวดล้อมให้ปลอดภัยจากศัตรูธรรมชาติ
-                </p>
-                <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
-                    <li>ระวังมด หนู และแมลงสาบ ซึ่งอาจเข้ามากินเศษอาหารหรือทำร้ายไส้เดือน</li>
-                    <li>ให้อาหารพอประมาณ หากให้อาหารเหลือเยอะเกินไปจะเกิดการหมักหมมและส่งกลิ่นเหม็น</li>
-                </ul>
-            </div>
-
-            
         </div>
+
+        <!-- การ์ดที่ 6: เทคนิคเพิ่มเติม -->
+        <div class="knowledge-card">
+            <div>
+                <span class="tag tag-tip">💡 เทคนิคเพิ่มเติม</span>
+                <h3>ข้อควรระวังและการจัดการอาหาร</h3>
+                <p style="color: #475569; font-size: 14px; line-height: 1.6;">
+                    การป้องกันศัตรูธรรมชาติและการจัดการขยะอินทรีย์อย่างเหมาะสม
+                </p>
+                <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
+                    <li>ป้องกันมด หนู และแมลงสาบ ซึ่งจะเข้ามารบกวนและทำร้ายไส้เดือน</li>
+                    <li>ให้อาหารแต่พอดี อาหารที่ค้างสลายไม่ทันจะเกิดความร้อนและการหมักหมมจนมีกลิ่นเหม็น</li>
+                </ul>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <!-- 🚀 เรียก JS แยกชิ้น -->
-    <script type="module" src="./src/knowledge-ui.js"></script>
+<script type="module" src="./src/knowledge-ui.js"></script>
 </body>
-
 </html>

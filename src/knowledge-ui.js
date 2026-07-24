@@ -1,6 +1,6 @@
 import { checkUserLogin, logoutUser } from "./dashboard.js";
 
-// 🎯 เช็คการล็อกอินและซ่อนเมนูแอดมินถ้าสิทธิ์ไม่ใช่ admin
+// 🎯 ตรวจสอบการล็อกอินและซ่อนเมนู Admin หากไม่มีสิทธิ์
 checkUserLogin((userData) => {
     if (userData) {
         document.getElementById("userNameText").innerText = userData.username;
@@ -11,5 +11,5 @@ checkUserLogin((userData) => {
     }
 });
 
-// 🎯 ตั้งค่าปุ่ม Logout
+// 🎯 ผูกปุ่ม Logout
 document.getElementById("logoutBtn")?.addEventListener("click", () => logoutUser());
