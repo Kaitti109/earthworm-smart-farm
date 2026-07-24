@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คลังความรู้ - ระบบฟาร์มอัจฉริยะ</title>
+    
+    <!-- 🚀 เรียก CSS แยกชิ้น -->
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <link rel="stylesheet" href="./css/knowledge.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand"> Smart Farm</div>
+        
+        <ul class="nav-menu">
+            <li><a href="./dashboard.html">📊 หน้าหลัก</a></li>
+            <li><a href="./history.html">📈 ประวัติย้อนหลัง</a></li>
+            <li><a href="./knowledge.html" class="active">📚 คลังความรู้</a></li>
+            <li><a href="./admin.html" id="adminMenuBtn" class="admin-link">🛡️ จัดการระบบ (Admin)</a></li>
+        </ul>
+
+        <div class="nav-user-zone">
+            <a href="./profile.html" style="color: inherit; text-decoration: none;" class="user-link-hover">
+                <span class="user-greeting">สวัสดี, <strong id="userNameText">โหลด..</strong> 👤</span>
+            </a>
+            <button class="nav-logout-btn" id="logoutBtn">ออกจากระบบ</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="welcome-banner">
+        <h2>📚 ศูนย์ความรู้คู่มือการเลี้ยงไส้เดือนอัจฉริยะ</h2>
+        <p>รวบรวมเกร็ดความรู้และสภาวะแวดล้อมที่เหมาะสมที่สุดสำหรับผลิตปุ๋ยหมักมูลไส้เดือนคุณภาพสูง</p>
+    </div>
+
+    <div class="knowledge-grid">
+        <!-- การ์ดที่ 1: อุณหภูมิ -->
+        <div class="knowledge-card">
+            <span class="tag tag-temp">🌡️ อุณหภูมิ (Temperature)</span>
+            <h3>ระดับอุณหภูมิที่เหมาะสม</h3>
+            <p style="color: #475569; font-size: 14px; line-height: 1.6;">
+                อุณหภูมิที่เหมาะสมที่สุดสำหรับไส้เดือนดิน อยู่ในช่วง <strong>25°C - 30°C</strong>
+            </p>
+            <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
+                <li>หากอุณหภูมิสูงกว่า 35°C ไส้เดือนจะเริ่มหนีออกนอกเบดดิ้งหรือตายได้</li>
+                <li><strong>ข้อแนะนำ:</strong> หากอุณหภูมิสูงเกินไป ควรสั่งเปิดระบบพ่นหมอกเพื่อลดความร้อนสะสม</li>
+            </ul>
+        </div>
+
+        <!-- การ์ดที่ 2: ความชื้น -->
+        <div class="knowledge-card">
+            <span class="tag tag-moist">💧 ความชื้น (Moisture)</span>
+            <h3>การดูแลระดับความชื้น</h3>
+            <p style="color: #475569; font-size: 14px; line-height: 1.6;">
+                ความชื้นเบดดิ้งที่เหมาะสมควรอยู่ที่ <strong>60% - 80%</strong> (ให้ความรู้สึกเหมือนฟองน้ำบิดหมาดๆ)
+            </p>
+            <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
+                <li>หากความชื้นต่ำกว่า 50% ไส้เดือนจะหายใจลำบาก (ไส้เดือนใช้ผิวหนังแลกเปลี่ยนออกซิเจน)</li>
+                <li><strong>ข้อแนะนำ:</strong> สั่งเปิดปั๊มน้ำพ่นหมอกเพิ่มความชื้นผ่านแผงควบคุม Dashboard</li>
+            </ul>
+        </div>
+
+        <!-- การ์ดที่ 3: pH -->
+        <div class="knowledge-card">
+            <span class="tag tag-ph">🧪 ค่ากรด-ด่าง (pH)</span>
+            <h3>ความเป็นกรด-ด่างที่สมดุล</h3>
+            <p style="color: #475569; font-size: 14px; line-height: 1.6;">
+                ค่า pH ในพื้นที่เลี้ยงควรเป็นกลาง อยู่ในช่วงประมาณ <strong>6.5 - 7.5</strong>
+            </p>
+            <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
+                <li>ควรหลีกเลี่ยงเศษอาหารประเภทผลไม้รสเปรี้ยว ชาดำ หรือกาแฟปริมาณมากเกินไป</li>
+                <li>หากเบดดิ้งเป็นกรดมากเกินไป อาจทำให้ไส้เดือนเกิดโรค Protein Bloat (ตัวพอง) ได้</li>
+            </ul>
+        </div>
+
+        <!-- การ์ดที่ 4: เทคนิคเพิ่มเติม -->
+        <div class="knowledge-card">
+            <span class="tag tag-tip">💡 เทคนิคเพิ่มเติม</span>
+            <h3>ข้อควรระวังการให้อาหาร</h3>
+            <p style="color: #475569; font-size: 14px; line-height: 1.6;">
+                การจัดการอาหารและสภาพแวดล้อมให้ปลอดภัยจากศัตรูธรรมชาติ
+            </p>
+            <ul style="color: #64748b; font-size: 13px; padding-left: 20px; line-height: 1.6;">
+                <li>ระวังมด หนู และแมลงสาบ ซึ่งอาจเข้ามากินเศษอาหารหรือทำร้ายไส้เดือน</li>
+                <li>ให้อาหารพอประมาณ หากให้อาหารเหลือเยอะเกินไปจะเกิดการหมักหมมและส่งกลิ่นเหม็น</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- 🚀 เรียก JS แยกชิ้น -->
+<script type="module" src="./src/knowledge-ui.js"></script>
+</body>
+</html>

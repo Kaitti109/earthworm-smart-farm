@@ -11,6 +11,7 @@ export default defineConfig({
         dashboard: resolve(__dirname, 'dashboard.html'),
         profile: resolve(__dirname, 'profile.html'),
         history: resolve(__dirname, 'history.html'), 
+        knowledge: resolve(__dirname, 'knowledge.html'),
         forgotPassword: resolve(__dirname, 'forgot-password.html') 
       }
     }
