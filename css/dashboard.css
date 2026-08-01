@@ -233,3 +233,41 @@ body {
     color: #34d399; /* เปลี่ยนเป็นสีเขียวมิ้นต์ หรือสีทอง #fbbf24 สว่างๆ ตอนชี้ชวนกด */
     transition: all 0.2s ease;
 }
+/* ----------------------------------------------------
+   🔔 Custom Toast Alert (สำหรับหน้าภายในทั้งหมด)
+   ---------------------------------------------------- */
+.custom-alert {
+    position: fixed;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-30px);
+    background: #ffffff;
+    border: 1.5px solid #1b5e20; /* เขียวฟาร์มเข้ม */
+    color: #1b5e20;
+    padding: 12px 28px;
+    border-radius: 50px;       /* รูปทรงแคปซูล */
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px -5px rgba(27, 94, 32, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-alert.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 🟢 ธีมแจ้งเตือนสำเร็จ (เขียวฟาร์มสดใส) */
+.custom-alert.success-theme {
+    background-color: #f0fdf4;
+    border-color: #86efac;
+    color: #166534;
+    box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.2);
+}

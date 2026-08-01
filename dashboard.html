@@ -6,7 +6,7 @@
     <title>Dashboard - ระบบฟาร์มอัจฉริยะ</title>
     <link rel="stylesheet" href="./css/dashboard.css">
 
-    <!-- 🎯 CSS Animation สำหรับเปิดแบบสมูทและเตรียมพร้อมสำหรับ Fade Out -->
+    <!-- 🎯 CSS Animation สำหรับเปิด/ปิดกราฟแบบสมูท -->
     <style>
         .card {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -16,7 +16,6 @@
             box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
 
-        /* เอฟเฟกต์การกางออกอย่างนุ่มนวลเมื่อถูกเปิด */
         .chart-card {
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
@@ -93,7 +92,7 @@
         </div>
     </div>
 
-    <!-- 📈 โซนกล่องกราฟ 3 ใบ (เอากล่องแม่เปิดไว้ แต่ซ่อนกล่องย่อยแต่ละใบแทน) -->
+    <!-- 📈 โซนกล่องกราฟ 3 ใบ -->
     <div id="chartsSection" class="charts-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
         <div id="tempChartCard" class="chart-card" style="display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
             <h4 style="margin-top:0; color: #1e293b;">📈 สถิติตัวเลขภูมิอากาศ (อุณหภูมิ)</h4>
@@ -108,6 +107,12 @@
             <canvas id="phChart"></canvas>
         </div>
     </div>
+</div>
+
+<!-- 🔔 กล่อง Custom Alert สำหรับแจ้งเตือนป๊อปอัพทรงแคปซูล -->
+<div id="customAlert" class="custom-alert">
+    <span id="alertIcon">🟢</span>
+    <span id="alertMessage">ข้อความแจ้งเตือน</span>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

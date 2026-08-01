@@ -3,6 +3,32 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+// 🎯 ฟังก์ชันแสดง Custom Toast Alert ทรงแคปซูลสวยงาม
+export function showCustomAlert(message, type = "success", duration = 3000) {
+    const alertBox = document.getElementById("customAlert");
+    const alertMessage = document.getElementById("alertMessage");
+    const alertIcon = document.getElementById("alertIcon");
+
+    if (alertBox && alertMessage) {
+        alertMessage.innerText = message;
+        alertBox.classList.remove("error-theme", "success-theme");
+
+        if (type === "error") {
+            alertBox.classList.add("error-theme");
+            if (alertIcon) alertIcon.innerText = "⚠️";
+        } else {
+            alertBox.classList.add("success-theme");
+            if (alertIcon) alertIcon.innerText = "🟢";
+        }
+
+        alertBox.classList.add("show");
+
+        setTimeout(() => {
+            alertBox.classList.remove("show");
+        }, duration);
+    }
+}
+
 // 1. ฟังก์ชันคอยตรวจจับว่าผู้ใช้คนนี้ล็อกอินอยู่ไหม และดึงข้อมูลให้ทันที
 export function checkUserLogin(callback) {
   onAuthStateChanged(auth, async (user) => {
@@ -32,17 +58,24 @@ export function checkUserLogin(callback) {
   });
 }
 
-// 2. ฟังก์ชันสำหรับกดออกจากระบบ
+// 2. ฟังก์ชันสำหรับกดออกจากระบบ (เปลี่ยนจาก alert เดิมเป็น Custom Alert)
 export function logoutUser() {
   signOut(auth).then(() => {
-    alert("ออกจากระบบเรียบร้อยแล้ว!");
-    window.location.href = "./login.html";
+    // 🟢 แสดงป๊อปอัพสีเขียวฟาร์มแทน alert() เดิม
+    showCustomAlert("ออกจากระบบเรียบร้อยแล้ว!", "success");
+
+    // หน่วงเวลา 1.2 วินาทีเพื่อให้ป๊อปอัพสไลด์โชว์ก่อนเปลี่ยนหน้า
+    setTimeout(() => {
+      window.location.href = "./login.html";
+    }, 1200);
+
   }).catch((error) => {
     console.error("Logout Error:", error);
+    showCustomAlert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "error");
   });
 }
 
-// 🚀 3. ฟังก์ชันสำหรับส่งคำสั่งควบคุมปั๊มน้ำฝั่ง User (มีตัวเดียวตรงนี้ ห้ามซ้ำ!)
+// 🚀 3. ฟังก์ชันสำหรับส่งคำสั่งควบคุมปั๊มน้ำฝั่ง User
 export async function sendUserControlCommand(userUid, deviceState) {
   try {
     if (!userUid) return false;
