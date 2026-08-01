@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เข้าสู่ระบบ - Firebase Login</title>
+    <title>เข้าสู่ระบบ - Smart Earthworm Farm</title>
 
     <link rel="stylesheet" href="./css/login.css">
 </head>
@@ -37,19 +37,24 @@
 
                 <div class="link-container">
                     <a href="./index.html">สมัครสมาชิกที่นี่</a>
-                    <a href="/forgot-password.html">ลืมรหัสผ่าน</a>
+                    <a href="./forgot-password.html">ลืมรหัสผ่าน</a>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 🔔 กล่อง Custom Alert ป๊อปอัพสีสวยงาม -->
+    <div id="customAlert" class="custom-alert">
+        <span id="alertIcon">🔔</span>
+        <span id="alertMessage">ข้อความแจ้งเตือน</span>
+    </div>
+
     <script type="module">
-        import { handleLogin } from "./src/login.js";
+        import { handleLogin, showCustomAlert } from "./src/login.js";
 
         document.getElementById("loginForm").addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            // 🚀 จุดที่ 2: เปลี่ยนการดึงค่าไอดีช่องกรอกข้อมูลให้ตรงกับอินพุตใหม่ข้างบน
             const identifier = document.getElementById("identifier").value;
             const password = document.getElementById("password").value;
 
@@ -57,30 +62,28 @@
             submitBtn.innerText = "กำลังตรวจสอบ...";
             submitBtn.disabled = true;
 
-            // เรียกฟังก์ชัน Login โดยส่งตัวแปร identifier (Email/User/Phone) เข้าไปประมวลผล
             const result = await handleLogin(identifier, password);
 
             if (result.success) {
-                alert("เข้าสู่ระบบสำเร็จ!");
+                // 🟢 ล็อกอินสำเร็จ: แสดง Toast สวยๆ แทน alert()
+                showCustomAlert("เข้าสู่ระบบสำเร็จ! กำลังพาท่านเข้าสู่ระบบ...", "success");
 
-                // เช็กบทบาท (Role) ของผู้ใช้ที่ล็อกอินเข้ามา
-                if (result.data && result.data.role === "admin") {
-                    // ถ้าเป็น Admin ให้เด้งไปหน้าแผงควบคุมระบบ
-                    window.location.href = "./admin.html";
-                } else {
-                    // ถ้าเป็น User ปกติ ให้เด้งไปหน้าดูค่าอุณหภูมิความชื้นปกติ
-                    window.location.href = "./dashboard.html";
-                }
+                // หน่วงเวลา 1.2 วินาทีเพื่อให้ป๊อปอัพเด้งโชว์ก่อนเปลี่ยนหน้า
+                setTimeout(() => {
+                    if (result.data && result.data.role === "admin") {
+                        window.location.href = "./admin.html";
+                    } else {
+                        window.location.href = "./dashboard.html";
+                    }
+                }, 1200);
+            } else {
+                // 🔴 ล็อกอินไม่สำเร็จ: โชว์ป๊อปอัพข้อผิดพลาด และคืนค่าปุ่ม
+                showCustomAlert(result.error || "ชื่อผู้ใช้ไม่ถูกต้องหรือรหัสผ่านไม่ถูกต้อง!", "error");
+                submitBtn.innerText = "ล็อกอิน";
+                submitBtn.disabled = false;
             }
-
-            submitBtn.innerText = "ล็อกอิน";
-            submitBtn.disabled = false;
         });
     </script>
-    <div id="customAlert" class="custom-alert">
-        <span>🔔</span>
-        <span id="alertMessage">ข้อความแจ้งเตือน</span>
-    </div>
 </body>
 
 </html>

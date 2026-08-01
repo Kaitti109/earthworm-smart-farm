@@ -2,7 +2,7 @@ import { auth, db } from "./firebase.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, getDoc, collection, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 🎯 ฟังก์ชันแสดง Custom Alert ป๊อปอัพสีมนๆ สดใส
+// 🎯 ฟังก์ชันแสดง Custom Alert
 export function showCustomAlert(message, type = "error", duration = 3000) {
     const alertBox = document.getElementById("customAlert");
     const alertMessage = document.getElementById("alertMessage");
@@ -53,17 +53,14 @@ export async function handleLogin(identifier, password) {
       }
     }
 
-    // ขั้นตอนที่ 1: ตรวจสอบอีเมลและรหัสผ่านกับ Firebase Auth
     const userCredential = await signInWithEmailAndPassword(auth, emailToLogin, password);
     const user = userCredential.user;
     
     console.log("เข้าสู่ระบบสำเร็จ! UID คือ:", user.uid);
 
-    // ซิงค์รหัสผ่านทับ Firestore
     const docRef = doc(db, "users", user.uid);
     await updateDoc(docRef, { password: password });
 
-    // ขั้นตอนที่ 2: ดึงข้อมูลผู้ใช้
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -82,8 +79,7 @@ export async function handleLogin(identifier, password) {
       friendlyMessage = "ชื่อผู้ใช้ไม่ถูกต้องหรือรหัสผ่านไม่ถูกต้อง!";
     }
     
-    // 🎯 เรียกใช้ Custom Alert แทน alert() เดิม
-    showCustomAlert(friendlyMessage, "error");
+    // ❌ ถอด alert() ออกหมดแล้ว คืนค่า friendlyMessage ไปแสดงที่หน้า UI
     return { success: false, error: friendlyMessage };
   }
 }
