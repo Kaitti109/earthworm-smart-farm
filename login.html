@@ -22,10 +22,7 @@
         <div class="right-side">
             <div class="register-container" id="loginBox">
                 <h2>เข้าสู่ระบบ</h2>
-                <div id="customAlert" class="custom-alert">
-                    <span>🔔</span>
-                    <span id="alertMessage">ข้อความแจ้งเตือน</span>
-                </div>
+
                 <form id="loginForm">
                     <div class="form-group">
                         <label for="identifier">อีเมล / ชื่อผู้ใช้ / เบอร์โทรศัพท์</label>
@@ -80,7 +77,10 @@
             submitBtn.disabled = false;
         });
     </script>
-
+    <div id="customAlert" class="custom-alert">
+        <span>🔔</span>
+        <span id="alertMessage">ข้อความแจ้งเตือน</span>
+    </div>
 </body>
 
 </html>
