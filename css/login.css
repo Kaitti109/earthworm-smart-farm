@@ -214,3 +214,50 @@ button:active {
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
     }
 }
+/* ----------------------------------------------------
+   🔔 Custom Notification Toast (ปรับโทนสีให้เข้ากับ Smart Earthworm Farm)
+   ---------------------------------------------------- */
+.custom-alert {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-30px);
+    background: #ffffff;
+    border: 1.5px solid #166534; /* สีเขียวเข้มเข้ากับปุ่มล็อกอิน */
+    color: #14532d;            /* ข้อความสีเขียวลึกอ่านง่าย */
+    padding: 14px 28px;
+    border-radius: 50px;       /* ทรงแคปซูลขอบมนนุ่มนวล */
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 12px 30px -5px rgba(27, 94, 32, 0.15), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* แสดงผลสไลด์ลงมาอย่างสมูท */
+.custom-alert.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 🔴 ธีมเมื่อเกิดข้อผิดพลาด (เช่น ใส่รหัสผิด) - โทนแดงชมพูละมุนเข้ากัน */
+.custom-alert.error-theme {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+    color: #991b1b;
+    box-shadow: 0 12px 30px -5px rgba(239, 68, 68, 0.15);
+}
+
+/* 🟢 ธีมเมื่อสำเร็จ (เช่น ล็อกอินสำเร็จ / ออกจากระบบ) - โทนเขียวฟาร์ม */
+.custom-alert.success-theme {
+    background-color: #f0fdf4;
+    border-color: #86efac;
+    color: #166534;
+    box-shadow: 0 12px 30px -5px rgba(34, 197, 94, 0.15);
+}

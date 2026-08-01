@@ -1,13 +1,28 @@
 import { auth, db } from "./firebase.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-// 🎯 เพิ่มอัปเดตบรรทัดที่ 3: เพิ่มคำว่า updateDoc เข้ามาในรายการ import
 import { doc, getDoc, collection, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// 🎯 ฟังก์ชันสำหรับแสดง Custom Alert สไตล์ป๊อปอัพสีครีมมนทรงแคปซูล
+export function showCustomAlert(message, duration = 3000) {
+    const alertBox = document.getElementById("customAlert");
+    const alertMessage = document.getElementById("alertMessage");
+
+    if (alertBox && alertMessage) {
+        alertMessage.innerText = message;
+        alertBox.classList.add("show");
+
+        // ซ่อนกล่องป๊อปอัพกลับเมื่อครบเวลา
+        setTimeout(() => {
+            alertBox.classList.remove("show");
+        }, duration);
+    }
+}
 
 export async function handleLogin(identifier, password) {
   try {
     let emailToLogin = identifier; 
 
-    // ตรวจสอบกรณีที่ผู้ใช้กรอก Username หรือ เบอร์โทรศัพท์มา (โค้ดเดิมที่เขียนไว้ดีมาก)
+    // ตรวจสอบกรณีที่ผู้ใช้กรอก Username หรือ เบอร์โทรศัพท์มา
     if (!identifier.includes("@")) {
       console.log("กำลังค้นหาบัญชีจาก Username หรือ เบอร์โทรศัพท์...");
 
@@ -36,7 +51,7 @@ export async function handleLogin(identifier, password) {
     
     console.log("เข้าสู่ระบบสำเร็จ! UID คือ:", user.uid);
 
-// สั่งให้อัปเดตค่าพาสเวิร์ดทับลงฟีลด์ password ใน Firestore (โค้ดเดิมของคุณ ดีอยู่แล้ว)
+    // อัปเดตค่าพาสเวิร์ดทับลงฟีลด์ password ใน Firestore
     const docRef = doc(db, "users", user.uid);
     await updateDoc(docRef, {
       password: password
@@ -48,9 +63,6 @@ export async function handleLogin(identifier, password) {
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
-      
-      // 🎯 🔑 จุดที่แก้ไข: บังคับอัปเดตค่าในตัวแปร userData ก่อนจะส่งกลับ (Return) 
-      // เพื่อป้องกันไม่ให้ระบบไปดึงค่ารหัสผ่านเก่าจากแคชมาใช้ส่งงานต่อ
       userData.password = password; 
 
       console.log("ดึงข้อมูลจาก Database สำเร็จ:", userData);
@@ -65,10 +77,12 @@ export async function handleLogin(identifier, password) {
     
     let friendlyMessage = error.message;
     if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
-      friendlyMessage = "รหัสผ่านไม่ถูกต้อง หรือไม่มีบัญชีผู้ใช้นี้ในระบบ";
+      friendlyMessage = "ชื่อผู้ใช้ไม่ถูกต้องหรือรหัสผ่านไม่ถูกต้อง! ❌";
     }
     
-    alert("เข้าสู่ระบบไม่สำเร็จ: " + friendlyMessage);
+    // 🎯 เปลี่ยนจาก alert() ดั้งเดิม มาใช้ Custom Alert สไตล์ป๊อปอัพสีครีมมน
+    showCustomAlert(friendlyMessage);
+    
     return { success: false, error: friendlyMessage };
   }
 }
