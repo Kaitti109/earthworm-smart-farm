@@ -1,4 +1,4 @@
-import { checkUserLogin, sendUserControlCommand, logoutUser } from "./dashboard.js";
+import { checkUserLogin, sendUserControlCommand, logoutUser, sendTelegramNotification } from "./dashboard.js";
 import { rtdb } from "./firebase.js";
 import { ref, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -7,21 +7,27 @@ let tempChartInstance = null;
 let moistChartInstance = null;
 let phChartInstance = null;
 
+// 🎯 ตัวแปรควบคุมการส่งแจ้งเตือน Telegram (ป้องกันการส่งย้ำๆ ทุกครั้งที่ค่าอัปเดต)
+let isTempAlertSent = false; 
+
 checkUserLogin((userData) => {
     if (userData) {
         currentLoggedUid = userData.uid; 
         document.getElementById("userNameText").innerText = userData.username;
 
         if (userData.role !== "admin") {
-            document.getElementById("adminMenuBtn").style.display = "none";
+            const adminBtn = document.getElementById("adminMenuBtn");
+            if (adminBtn) adminBtn.style.display = "none";
         }
 
-        // 1. ดักฟังค่าการ์ดเซนเซอร์ปัจจุบัน
+        // 1. ดักฟังค่าการ์ดเซนเซอร์ปัจจุบัน + แจ้งเตือน Telegram เมื่ออุณหภูมิสูงเกินไป
         const currentSensorRef = ref(rtdb, `users_farms/${userData.uid}/current`);
         onValue(currentSensorRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                document.getElementById("tempVal").innerText = data.temp !== undefined ? data.temp.toFixed(1) : "--";
+                const temp = data.temp !== undefined ? data.temp : null;
+
+                document.getElementById("tempVal").innerText = temp !== null ? temp.toFixed(1) : "--";
                 document.getElementById("humidityVal").innerText = data.moist !== undefined ? data.moist.toFixed(1) : "--";
                 document.getElementById("phVal").innerText = data.ph !== undefined ? data.ph : "--";
 
@@ -32,6 +38,22 @@ checkUserLogin((userData) => {
                 } else {
                     statusText.innerText = "🔴 บอร์ดทำงาน: ปิดปั๊มน้ำอยู่";
                     statusText.style.color = "#ef4444";
+                }
+
+                // 📲 เช็กอุณหภูมิเพื่อยิงแจ้งเตือนเข้า Telegram
+                if (temp !== null) {
+                    if (temp >= 32.0 && !isTempAlertSent) {
+                        // แจ้งเตือนเมื่อร้อนเกิน 32°C (ตั้งค่าตัวเลขเกณฑ์อุณหภูมิได้ตามต้องการ)
+                        sendTelegramNotification(
+                            `🌡️ <b>[เตือนอุณหภูมิสูงเกินเกณฑ์!]</b>\n` +
+                            `อุณหภูมิเบดดิ้งปัจจุบัน: <b>${temp.toFixed(1)} °C</b> ⚠️\n` +
+                            `สภาพแวดล้อมเริ่มร้อนเกินไปสำหรับไส้เดือน AF กรุณาตรวจสอบหรือสั่งเปิดปั๊มพ่นหมอก`
+                        );
+                        isTempAlertSent = true; // ล็อกไว้ไม่ให้ยิงข้อความรัว
+                    } else if (temp <= 30.0 && isTempAlertSent) {
+                        // ปลดล็อกเมื่ออุณหภูมิเย็นลงมาอยู่ในระดับปกติ (ต่ำกว่า 30°C)
+                        isTempAlertSent = false; 
+                    }
                 }
             }
         });
@@ -107,7 +129,7 @@ function renderCharts(labels, tempVals, moistVals, phVals) {
     });
 }
 
-// 🎯 ฟังก์ชัน Toggle แสดงผลทันทีเมื่อกด และค่อยๆ จางหาย (Fade Out) เมื่อกดซ่อน
+// 🎯 ฟังก์ชัน Toggle แสดงผลกราฟนุ่มนวล
 function toggleChart(sensorType) {
     const tempCard = document.getElementById("tempChartCard");
     const moistCard = document.getElementById("moistChartCard");
@@ -120,41 +142,36 @@ function toggleChart(sensorType) {
 
     if (!targetCard) return;
 
-    // เช็คว่าปัจจุบันซ่อนอยู่ หรือเปิดอยู่
     const isHidden = window.getComputedStyle(targetCard).display === "none";
 
     if (isHidden) {
-        // 🟢 เปิดกราฟทันที พร้อมใส่ Animation จางขึ้นมาอย่างนุ่มนวล
         targetCard.style.display = "block";
         targetCard.style.opacity = "1";
         targetCard.style.transform = "translateY(0)";
         targetCard.classList.add("fade-in");
-        
-        // เลื่อนหน้าจอลงมาดูอย่างสมูท
         targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else {
-        // 🔴 ปิดซ่อน: ค่อยๆ จางลง (Fade Out) ก่อนที่จะสั่ง display = "none"
         targetCard.classList.remove("fade-in");
         targetCard.style.opacity = "0";
         targetCard.style.transform = "translateY(-10px)";
         
         setTimeout(() => {
             targetCard.style.display = "none";
-        }, 250); // รอเล่น Animation ให้จบ 0.25 วินาทีแล้วค่อยซ่อน
+        }, 250);
     }
 }
 
-// 🎯 ผูก Event ให้การ์ดด้านบน (กดครั้งแรกเปิด กดซ้ำปิด)
+// 🎯 ผูก Event ให้การ์ดด้านบน (กดเปิด/ปิดกราฟ)
 document.getElementById("clickTempCard")?.addEventListener("click", () => toggleChart('temp'));
 document.getElementById("clickMoistCard")?.addEventListener("click", () => toggleChart('moist'));
 document.getElementById("clickPhCard")?.addEventListener("click", () => toggleChart('ph'));
 
-// ปุ่มควบคุมปั๊ม
-document.getElementById("userPumpOnBtn").addEventListener("click", async () => {
+// 🎯 ปุ่มควบคุมปั๊ม (แจ้งเตือน Telegram อัตโนมัติจากใน sendUserControlCommand)
+document.getElementById("userPumpOnBtn")?.addEventListener("click", async () => {
     if (currentLoggedUid) await sendUserControlCommand(currentLoggedUid, true);
 });
-document.getElementById("userPumpOffBtn").addEventListener("click", async () => {
+document.getElementById("userPumpOffBtn")?.addEventListener("click", async () => {
     if (currentLoggedUid) await sendUserControlCommand(currentLoggedUid, false);
 });
 
-document.getElementById("logoutBtn").addEventListener("click", () => logoutUser());
+document.getElementById("logoutBtn")?.addEventListener("click", () => logoutUser());

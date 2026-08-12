@@ -3,7 +3,32 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// 🎯 ฟังก์ชันแสดง Custom Toast Alert ทรงแคปซูลสวยงาม
+// 🎯 ตั้งค่า Telegram Bot
+const TELEGRAM_TOKEN = "8989413719:AAEBlxePLJ03u9tmwxuXoc9QxMd7OyGL7ko";
+const TELEGRAM_CHAT_ID = "8683019575";
+
+// 🚀 ฟังก์ชันยิงข้อความเข้า Telegram
+export async function sendTelegramNotification(message) {
+    if (!TELEGRAM_TOKEN || !TELEGRAM_CHAT_ID) return;
+    
+    const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+    try {
+        await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: "HTML"
+            })
+        });
+        console.log("ส่งแจ้งเตือน Telegram สำเร็จ!");
+    } catch (error) {
+        console.error("ส่ง Telegram ไม่สำเร็จ:", error);
+    }
+}
+
+// 🎯 ฟังก์ชันแสดง Custom Toast Alert ทรงแคปซูล
 export function showCustomAlert(message, type = "success", duration = 3000) {
     const alertBox = document.getElementById("customAlert");
     const alertMessage = document.getElementById("alertMessage");
@@ -29,7 +54,7 @@ export function showCustomAlert(message, type = "success", duration = 3000) {
     }
 }
 
-// 1. ฟังก์ชันคอยตรวจจับว่าผู้ใช้คนนี้ล็อกอินอยู่ไหม และดึงข้อมูลให้ทันที
+// 1. ฟังก์ชันคอยตรวจจับว่าผู้ใช้คนนี้ล็อกอินอยู่ไหม
 export function checkUserLogin(callback) {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -40,7 +65,6 @@ export function checkUserLogin(callback) {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          // แนบ uid เข้าไปในก้อนข้อมูลด้วย เพื่อให้หน้าเว็บดึงไปใช้แยกโฟลเดอร์ใน Realtime DB
           const userData = docSnap.data();
           userData.uid = user.uid; 
           callback(userData);
@@ -58,13 +82,11 @@ export function checkUserLogin(callback) {
   });
 }
 
-// 2. ฟังก์ชันสำหรับกดออกจากระบบ (เปลี่ยนจาก alert เดิมเป็น Custom Alert)
+// 2. ฟังก์ชันสำหรับกดออกจากระบบ
 export function logoutUser() {
   signOut(auth).then(() => {
-    // 🟢 แสดงป๊อปอัพสีเขียวฟาร์มแทน alert() เดิม
     showCustomAlert("ออกจากระบบเรียบร้อยแล้ว!", "success");
 
-    // หน่วงเวลา 1.2 วินาทีเพื่อให้ป๊อปอัพสไลด์โชว์ก่อนเปลี่ยนหน้า
     setTimeout(() => {
       window.location.href = "./login.html";
     }, 1200);
@@ -75,17 +97,21 @@ export function logoutUser() {
   });
 }
 
-// 🚀 3. ฟังก์ชันสำหรับส่งคำสั่งควบคุมปั๊มน้ำฝั่ง User
+// 🚀 3. ฟังก์ชันสั่งงานปั๊มน้ำ + แจ้งเตือน Telegram อัตโนมัติ
 export async function sendUserControlCommand(userUid, deviceState) {
   try {
     if (!userUid) return false;
 
-    // ชี้เป้าไปที่โฟลเดอร์ UID ของผู้ใช้คนนั้นๆ ในโครงสร้างแบบ Multi-User
     const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
     await update(controlRef, {
-      auto_mode: false,         // ปิดระบบออโต้เพื่อให้บอร์ดทำตามคำสั่งแบบ Manual
-      pump_command: deviceState // ค่าจะเป็น true (เปิด) หรือ false (ปิด)
+      auto_mode: false,         // ปิดระบบออโต้เพื่อสั่งงานแบบ Manual
+      pump_command: deviceState // true = เปิด, false = ปิด
     });
+
+    // 📲 ส่งแจ้งเตือน Telegram ทันทีที่อัปเดตคำสั่งสำเร็จ
+    const statusText = deviceState ? "<b>เปิดปั๊มน้ำพ่นหมอก (ON)</b> 🟢" : "<b>ปิดปั๊มน้ำพ่นหมอก (OFF)</b> 🔴";
+    sendTelegramNotification(`💧 <b>[Smart Earthworm Farm]</b>\nระบบได้รับการสั่งงาน: ${statusText}`);
+
     return true;
   } catch (error) {
     console.error("User สั่งงานปั๊มน้ำไม่สำเร็จ:", error);
