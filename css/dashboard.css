@@ -4,6 +4,7 @@
     --surface: #ffffff;
     --text-heading: #0f172a;
     --text-body: #475569;
+    --text-muted: #64748b;
     --color-temp: #f97316;
     --color-humidity: #3b82f6;
     --color-ph: #10b981;
@@ -18,21 +19,18 @@ body {
     padding: 0; 
     color: var(--text-body);
     min-height: 100vh;
-
-    /* 🚀 ถมสีขาวนวลทับรูปภาพไว้ 92% (rgba 0.92) เพื่อให้ภาพดูจางๆ สบายตาและอ่านข้อมูลง่าย */
     background-image: 
         linear-gradient(rgba(248, 250, 252, 0.92), rgba(248, 250, 252, 0.92)), 
-        url('https://www.technologychaoban.com/wp-content/uploads/2016/11/2-16.jpg'); /* 💡 กัมมี่เปลี่ยนลิงก์รูปตรงนี้ได้เลยครับ */
-    
+        url('https://www.technologychaoban.com/wp-content/uploads/2016/11/2-16.jpg'); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed; /* ทำให้รูปพื้นหลังล็อกอยู่กับที่เวลาสกรอลล์หน้าจอ */
+    background-attachment: fixed;
 }
 
 /* 🚀 👑 ดีไซน์แถบเมนูบนสุดแบบโมเดิร์น (Navbar Style) */
 .navbar {
-    background-color: #0f172a; /* สีกรมเข้มดาร์กโหมด */
+    background-color: #0f172a;
     color: white;
     position: sticky;
     top: 0;
@@ -54,10 +52,9 @@ body {
     font-size: 20px;
     font-weight: 700;
     letter-spacing: 0.5px;
-    color: #34d399; /* สีเขียวมิ้นต์ผลิใบ */
+    color: #34d399;
 }
 
-/* ลิสต์รายการเมนู */
 .nav-menu {
     display: flex;
     list-style: none;
@@ -84,13 +81,11 @@ body {
     transition: var(--transition);
 }
 
-/* เอฟเฟกต์ตอนเมาส์ชี้เมนู หรือเมนูที่เปิดอยู่ (Active) */
 .nav-menu a:hover, .nav-menu a.active {
     color: white;
     background-color: rgba(255, 255, 255, 0.08);
 }
 
-/* ไฮไลท์พิเศษสำหรับลิงก์เข้าหน้าแอดมิน */
 .nav-menu a.admin-link {
     color: #f59e0b;
 }
@@ -99,7 +94,6 @@ body {
     color: #fbbf24;
 }
 
-/* โซนโปรไฟล์ขวาขวา */
 .nav-user-zone {
     display: flex;
     align-items: center;
@@ -114,7 +108,6 @@ body {
     color: #34d399;
 }
 
-/* ปุ่มออกจากระบบในเวอร์ชัน Navbar */
 .nav-logout-btn {
     background-color: rgba(239, 68, 68, 0.15);
     color: #f87171;
@@ -139,7 +132,6 @@ body {
     padding: 0 20px;
 }
 
-/* ป้ายแบนเนอร์ทักทายในหน้าหลัก */
 .welcome-banner {
     margin-bottom: 35px;
 }
@@ -155,7 +147,74 @@ body {
     font-size: 15px;
 }
 
-/* 📊 ระบบ Grid สำหรับการ์ดเซนเซอร์ (ปรับความกว้างขั้นต่ำให้บาลานซ์ขึ้น) */
+/* 💧 แผงควบคุมระบบ Auto / Manual */
+.user-control-panel {
+    background: var(--surface);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    border: 1px solid #edf2f7;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.control-text-group h3 {
+    margin: 0;
+    color: var(--text-heading);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.control-text-group p {
+    margin: 5px 0 0 0;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.control-buttons-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-auto-on { background-color: #2563eb; color: white; }
+.btn-auto-off { background-color: #64748b; color: white; }
+.btn-pump-on { background-color: #10b981; color: white; }
+.btn-pump-off { background-color: #ef4444; color: white; }
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.status-auto {
+    font-weight: 600;
+    color: #2563eb;
+    font-size: 14px;
+    margin-right: 12px;
+}
+
+.status-pump {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 14px;
+}
+
+/* 📊 การ์ดเซนเซอร์ 3 ใบ */
 .grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
@@ -172,6 +231,7 @@ body {
     overflow: hidden;
     transition: var(--transition);
     border: 1px solid #edf2f7;
+    cursor: pointer;
 }
 
 .card::before {
@@ -192,7 +252,7 @@ body {
     margin: 0 0 15px 0; 
     color: var(--text-body); 
     font-size: 14px; 
-    font-weight: 600;
+    font-weight: 600; 
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -212,40 +272,49 @@ body {
 .ph-color::before { background-color: var(--color-ph); }
 .ph-color .value { color: var(--color-ph); }
 
-/* Responsive สำหรับมือถือ */
-@media (max-width: 768px) {
-    .nav-container {
-        flex-direction: column;
-        height: auto;
-        padding: 15px;
-        gap: 15px;
-    }
-    .nav-menu {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .container {
-        margin: 20px auto;
-    }
+/* 📈 โซนกราฟสถิติ */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
 }
-.user-link-hover:hover strong {
-    text-decoration: underline;
-    color: #34d399; /* เปลี่ยนเป็นสีเขียวมิ้นต์ หรือสีทอง #fbbf24 สว่างๆ ตอนชี้ชวนกด */
-    transition: all 0.2s ease;
+
+.chart-card {
+    display: none;
+    background: var(--surface);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid #edf2f7;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
-/* ----------------------------------------------------
-   🔔 Custom Toast Alert (สำหรับหน้าภายในทั้งหมด)
-   ---------------------------------------------------- */
+
+.chart-card h4 {
+    margin-top: 0;
+    color: var(--text-heading);
+}
+
+.chart-card.fade-in {
+    animation: smoothFadeIn 0.3s ease forwards;
+}
+
+@keyframes smoothFadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 🔔 Custom Toast Alert */
 .custom-alert {
     position: fixed;
     top: 25px;
     left: 50%;
     transform: translateX(-50%) translateY(-30px);
     background: #ffffff;
-    border: 1.5px solid #1b5e20; /* เขียวฟาร์มเข้ม */
+    border: 1.5px solid #1b5e20;
     color: #1b5e20;
     padding: 12px 28px;
-    border-radius: 50px;       /* รูปทรงแคปซูล */
+    border-radius: 50px;
     font-size: 15px;
     font-weight: 600;
     box-shadow: 0 10px 25px -5px rgba(27, 94, 32, 0.2);
@@ -264,10 +333,43 @@ body {
     transform: translateX(-50%) translateY(0);
 }
 
-/* 🟢 ธีมแจ้งเตือนสำเร็จ (เขียวฟาร์มสดใส) */
 .custom-alert.success-theme {
     background-color: #f0fdf4;
     border-color: #86efac;
     color: #166534;
     box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.2);
+}
+
+.custom-alert.error-theme {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+    color: #991b1b;
+    box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.2);
+}
+
+.user-link-hover:hover strong {
+    text-decoration: underline;
+    color: #34d399;
+    transition: var(--transition);
+}
+
+/* 📱 Responsive สำหรับมือถือ */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        gap: 15px;
+    }
+    .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .container {
+        margin: 20px auto;
+    }
+    .user-control-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

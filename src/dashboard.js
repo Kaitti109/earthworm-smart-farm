@@ -97,14 +97,14 @@ export function logoutUser() {
   });
 }
 
-// 🚀 3. ฟังก์ชันสั่งงานปั๊มน้ำ (Manual) + แจ้งเตือน Telegram
+// 🚀 3. ฟังก์ชันสั่งงานปั๊มน้ำ (Manual) + แจ้งเตือน Telegram อัตโนมัติ
 export async function sendUserControlCommand(userUid, deviceState) {
   try {
     if (!userUid) return false;
 
     const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
     await update(controlRef, {
-      auto_mode: false,         // ปิดระบบออโต้เมื่อมีการกดสั่งแบบ Manual
+      auto_mode: false,         // ปิดระบบออโต้เมื่อกดสั่ง Manual
       pump_command: deviceState // true = เปิด, false = ปิด
     });
 

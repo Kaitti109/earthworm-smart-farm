@@ -3,38 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - ระบบฟาร์มอัจฉริยะ</title>
+    <title>Dashboard - Smart Earthworm Farm</title>
+    
+    <!-- นำเข้าไฟล์สไตล์ภายนอก -->
     <link rel="stylesheet" href="./css/dashboard.css">
-
-    <!-- 🎯 CSS Animation สำหรับเปิด/ปิดกราฟแบบสมูท -->
-    <style>
-        .card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-        }
-
-        .chart-card {
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        @keyframes smoothFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .chart-card.fade-in {
-            animation: smoothFadeIn 0.3s ease forwards;
-        }
-    </style>
 </head>
 <body>
 
@@ -50,7 +22,7 @@
         </ul>
 
         <div class="nav-user-zone">
-            <a href="./profile.html" style="color: inherit; text-decoration: none;" class="user-link-hover">
+            <a href="./profile.html" class="user-link-hover">
                 <span class="user-greeting">สวัสดี, <strong id="userNameText">โหลด..</strong> 👤</span>
             </a>
             <button class="nav-logout-btn" id="logoutBtn">ออกจากระบบ</button>
@@ -64,52 +36,60 @@
         <p>ข้อมูลอัปเดตแบบเรียลไทม์จากระบบเซนเซอร์ในฟาร์มไส้เดือน (คลิกที่การ์ดเพื่อเปิด/ปิดดูกราฟ)</p>
     </div>
 
-    <div class="user-control-panel" style="background: white; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
-        <div>
-            <h3 style="margin: 0; color: #0f172a; font-size: 18px; font-weight: 700;">💧 สั่งเปิด-ปิดปั๊มน้ำไดอะแฟรม</h3>
-            <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">User สามารถกดเปิดระบบพ่นหมอกเพิ่มความชื้นให้กับไส้เดือนได้เองทันที</p>
+    <!-- แผงควบคุมระบบ Auto / Manual -->
+    <div class="user-control-panel">
+        <div class="control-text-group">
+            <h3>💧 ควบคุมระบบรดน้ำ/พ่นหมอก</h3>
+            <p>สลับโหมดอัตโนมัติหรือสั่งเปิด-ปิดปั๊มน้ำด้วยตนเอง</p>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <button id="userPumpOnBtn" style="background-color: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">เปิดปั๊มน้ำ (ON)</button>
-            <button id="userPumpOffBtn" style="background-color: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">ปิดปั๊มน้ำ (OFF)</button>
-            <span id="userPumpStatus" style="font-weight: 600; color: #1e293b; font-size: 14px; margin-left: 5px;">กำลังโหลดสถานะปั๊ม...</span>
+        
+        <div class="control-buttons-group">
+            <!-- โหมด Auto -->
+            <button id="userAutoOnBtn" class="btn btn-auto-on">⚙️ เปิด Auto</button>
+            <button id="userAutoOffBtn" class="btn btn-auto-off">✋ ปิด Auto</button>
+            <span id="userAutoStatus" class="status-auto">โหมด: กำลังโหลด...</span>
+
+            <!-- โหมด Manual -->
+            <button id="userPumpOnBtn" class="btn btn-pump-on">เปิดปั๊ม (ON)</button>
+            <button id="userPumpOffBtn" class="btn btn-pump-off">ปิดปั๊ม (OFF)</button>
+            <span id="userPumpStatus" class="status-pump">สถานะ: กำลังโหลด...</span>
         </div>
     </div>
 
-    <!-- 🎯 การ์ดเซนเซอร์ 3 ใบด้านบน -->
+    <!-- การ์ดเซนเซอร์ 3 ใบ -->
     <div class="grid">
-        <div id="clickTempCard" class="card temp-color" style="cursor: pointer;" title="คลิกเพื่อเปิด/ปิดกราฟอุณหภูมิ">
+        <div id="clickTempCard" class="card temp-color" title="คลิกเพื่อเปิด/ปิดกราฟอุณหภูมิ">
             <h3>อุณหภูมิ (Temperature) 👆</h3>
             <div class="value"><span id="tempVal">--</span> °C</div>
         </div>
-        <div id="clickMoistCard" class="card humidity-color" style="cursor: pointer;" title="คลิกเพื่อเปิด/ปิดกราฟความชื้น">
+        <div id="clickMoistCard" class="card humidity-color" title="คลิกเพื่อเปิด/ปิดกราฟความชื้น">
             <h3>ความชื้น (Moisture) 👆</h3>
             <div class="value"><span id="humidityVal">--</span> %</div>
         </div>
-        <div id="clickPhCard" class="card ph-color" style="cursor: pointer;" title="คลิกเพื่อเปิด/ปิดกราฟ pH">
+        <div id="clickPhCard" class="card ph-color" title="คลิกเพื่อเปิด/ปิดกราฟ pH">
             <h3>ค่าความเป็นกรด-ด่าง (pH) 👆</h3>
             <div class="value">pH <span id="phVal">--</span></div>
         </div>
     </div>
 
-    <!-- 📈 โซนกล่องกราฟ 3 ใบ -->
-    <div id="chartsSection" class="charts-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
-        <div id="tempChartCard" class="chart-card" style="display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <h4 style="margin-top:0; color: #1e293b;">📈 สถิติตัวเลขภูมิอากาศ (อุณหภูมิ)</h4>
+    <!-- โซนแสดงผลกราฟ -->
+    <div id="chartsSection" class="charts-container">
+        <div id="tempChartCard" class="chart-card">
+            <h4>📈 สถิติตัวเลขภูมิอากาศ (อุณหภูมิ)</h4>
             <canvas id="tempChart"></canvas>
         </div>
-        <div id="moistChartCard" class="chart-card" style="display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <h4 style="margin-top:0; color: #1e293b;">📉 สถิติความชื้นมูลไส้เดือน</h4>
+        <div id="moistChartCard" class="chart-card">
+            <h4>📉 สถิติความชื้นมูลไส้เดือน</h4>
             <canvas id="moistChart"></canvas>
         </div>
-        <div id="phChartCard" class="chart-card" style="display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <h4 style="margin-top:0; color: #0d9488;">🧪 สถิติค่าความเป็นกรด-ด่าง (pH)</h4>
+        <div id="phChartCard" class="chart-card">
+            <h4>🧪 สถิติค่าความเป็นกรด-ด่าง (pH)</h4>
             <canvas id="phChart"></canvas>
         </div>
     </div>
 </div>
 
-<!-- 🔔 กล่อง Custom Alert สำหรับแจ้งเตือนป๊อปอัพทรงแคปซูล -->
+<!-- ป๊อปอัพแจ้งเตือน Custom Alert -->
 <div id="customAlert" class="custom-alert">
     <span id="alertIcon">🟢</span>
     <span id="alertMessage">ข้อความแจ้งเตือน</span>
