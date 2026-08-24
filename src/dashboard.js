@@ -97,24 +97,43 @@ export function logoutUser() {
   });
 }
 
-// 🚀 3. ฟังก์ชันสั่งงานปั๊มน้ำ + แจ้งเตือน Telegram อัตโนมัติ
+// 🚀 3. ฟังก์ชันสั่งงานปั๊มน้ำ (Manual) + แจ้งเตือน Telegram
 export async function sendUserControlCommand(userUid, deviceState) {
   try {
     if (!userUid) return false;
 
     const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
     await update(controlRef, {
-      auto_mode: false,         // ปิดระบบออโต้เพื่อสั่งงานแบบ Manual
+      auto_mode: false,         // ปิดระบบออโต้เมื่อมีการกดสั่งแบบ Manual
       pump_command: deviceState // true = เปิด, false = ปิด
     });
 
-    // 📲 ส่งแจ้งเตือน Telegram ทันทีที่อัปเดตคำสั่งสำเร็จ
     const statusText = deviceState ? "<b>เปิดปั๊มน้ำพ่นหมอก (ON)</b> 🟢" : "<b>ปิดปั๊มน้ำพ่นหมอก (OFF)</b> 🔴";
     sendTelegramNotification(`💧 <b>[Smart Earthworm Farm]</b>\nระบบได้รับการสั่งงาน: ${statusText}`);
 
     return true;
   } catch (error) {
     console.error("User สั่งงานปั๊มน้ำไม่สำเร็จ:", error);
+    return false;
+  }
+}
+
+// ⚙️ 4. ฟังก์ชันสั่งเปิด/ปิด โหมดอัตโนมัติ (Auto Mode) + แจ้งเตือน Telegram
+export async function setUserAutoMode(userUid, isAuto) {
+  try {
+    if (!userUid) return false;
+
+    const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
+    await update(controlRef, {
+      auto_mode: isAuto
+    });
+
+    const modeText = isAuto ? "<b>เปิดโหมดอัตโนมัติ (AUTO ON)</b> ⚙️" : "<b>เปิดโหมดกำหนดเอง (MANUAL)</b> ✋";
+    sendTelegramNotification(`⚙️ <b>[Smart Earthworm Farm]</b>\nเปลี่ยนโหมดการทำงาน: ${modeText}`);
+
+    return true;
+  } catch (error) {
+    console.error("เปลี่ยนโหมด Auto ไม่สำเร็จ:", error);
     return false;
   }
 }
