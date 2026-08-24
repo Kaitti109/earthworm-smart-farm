@@ -58,7 +58,7 @@ export function showCustomAlert(message, type = "success", duration = 3000) {
 export function checkUserLogin(callback) {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      console.log("ยืนยันสถานะ: ผู้ใช้งานล็อกอินอยู่", user.uid);
+      console.log("ยืนยันสถานะ: ผู้ใช้งานล็อกอินอยู่ UID =", user.uid);
       
       try {
         const docRef = doc(db, "users", user.uid);
@@ -69,11 +69,13 @@ export function checkUserLogin(callback) {
           userData.uid = user.uid; 
           callback(userData);
         } else {
-          console.log("ไม่พบเอกสารข้อมูลผู้ใช้ในฐานข้อมูล!");
-          callback(null);
+          console.log("ไม่พบเอกสารข้อมูลผู้ใช้ใน Firestore!");
+          // ถ้าไม่มี Firestore แต่ล็อกอิน Auth ผ่าน ยังให้ส่ง UID ไปทำงานต่อได้
+          callback({ uid: user.uid, username: user.email || "ผู้ใช้งาน" });
         }
       } catch (error) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
+        callback({ uid: user.uid, username: user.email || "ผู้ใช้งาน" });
       }
     } else {
       window.location.href = "./login.html";
@@ -94,43 +96,65 @@ export function logoutUser() {
   });
 }
 
-// 🚀 3. สั่งงานปั๊มน้ำ (Manual) ชี้ไปที่ /users_farms/<UID>/controls
+// 🚀 3. สั่งงานปั๊มน้ำ (Manual)
 export async function sendUserControlCommand(userUid, deviceState) {
-  try {
-    if (!userUid) return false;
+  if (!userUid) {
+    console.error("❌ ไม่พบ UID ไม่สามารถสั่งงานได้");
+    showCustomAlert("เกิดข้อผิดพลาด: ไม่พบ UID", "error");
+    return false;
+  }
 
-    const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
+  const path = `users_farms/${userUid}/controls`;
+  console.log(`📡 กำลังส่งคำสั่งไปที่: ${path}`, { pump_command: deviceState });
+
+  try {
+    const controlRef = ref(rtdb, path);
     await update(controlRef, {
       auto_mode: false,
       pump_command: deviceState
     });
+
+    console.log("✅ Firebase อัปเดตสำเร็จ!");
+    showCustomAlert(deviceState ? "เปิดปั๊มน้ำสำเร็จ" : "ปิดปั๊มน้ำสำเร็จ", "success");
 
     const statusText = deviceState ? "<b>เปิดปั๊มน้ำพ่นหมอก (ON)</b> 🟢" : "<b>ปิดปั๊มน้ำพ่นหมอก (OFF)</b> 🔴";
     sendTelegramNotification(`💧 <b>[Smart Earthworm Farm]</b>\nระบบได้รับการสั่งงาน: ${statusText}`);
 
     return true;
   } catch (error) {
-    console.error("User สั่งงานปั๊มน้ำไม่สำเร็จ:", error);
+    console.error("❌ Firebase Write Error:", error);
+    showCustomAlert("สั่งงานไม่สำเร็จ: " + error.message, "error");
     return false;
   }
 }
 
-// ⚙️ 4. สั่งเปิด/ปิด โหมดอัตโนมัติ (Auto Mode) ชี้ไปที่ /users_farms/<UID>/controls
+// ⚙️ 4. สั่งเปิด/ปิด โหมดอัตโนมัติ (Auto Mode)
 export async function setUserAutoMode(userUid, isAuto) {
-  try {
-    if (!userUid) return false;
+  if (!userUid) {
+    console.error("❌ ไม่พบ UID ไม่สามารถเปลี่ยนโหมดได้");
+    showCustomAlert("เกิดข้อผิดพลาด: ไม่พบ UID", "error");
+    return false;
+  }
 
-    const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
+  const path = `users_farms/${userUid}/controls`;
+  console.log(`📡 กำลังเปลี่ยนโหมดไปที่: ${path}`, { auto_mode: isAuto });
+
+  try {
+    const controlRef = ref(rtdb, path);
     await update(controlRef, {
       auto_mode: isAuto
     });
+
+    console.log("✅ Firebase ปรับโหมดสำเร็จ!");
+    showCustomAlert(isAuto ? "เปิดระบบ Auto สำเร็จ" : "เปิดระบบ Manual สำเร็จ", "success");
 
     const modeText = isAuto ? "<b>เปิดโหมดอัตโนมัติ (AUTO ON)</b> ⚙️" : "<b>เปิดโหมดกำหนดเอง (MANUAL)</b> ✋";
     sendTelegramNotification(`⚙️ <b>[Smart Earthworm Farm]</b>\nเปลี่ยนโหมดการทำงาน: ${modeText}`);
 
     return true;
   } catch (error) {
-    console.error("เปลี่ยนโหมด Auto ไม่สำเร็จ:", error);
+    console.error("❌ Firebase Write Error:", error);
+    showCustomAlert("เปลี่ยนโหมดไม่สำเร็จ: " + error.message, "error");
     return false;
   }
 }
