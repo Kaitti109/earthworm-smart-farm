@@ -102,7 +102,8 @@ export async function sendUserControlCommand(userUid, deviceState) {
   try {
     if (!userUid) return false;
 
-    const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
+    // ชี้ตรงไปที่ UID Root path
+    const controlRef = ref(rtdb, `${userUid}/controls`);
     await update(controlRef, {
       auto_mode: false,         // ปิดระบบออโต้เมื่อกดสั่ง Manual
       pump_command: deviceState // true = เปิด, false = ปิด
@@ -123,7 +124,8 @@ export async function setUserAutoMode(userUid, isAuto) {
   try {
     if (!userUid) return false;
 
-    const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
+    // ชี้ตรงไปที่ UID Root path
+    const controlRef = ref(rtdb, `${userUid}/controls`);
     await update(controlRef, {
       auto_mode: isAuto
     });
