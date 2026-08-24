@@ -1,4 +1,4 @@
-import { checkUserLogin, sendUserControlCommand, logoutUser, sendTelegramNotification } from "./dashboard.js";
+import { checkUserLogin, sendUserControlCommand, setUserAutoMode, logoutUser, sendTelegramNotification } from "./dashboard.js";
 import { rtdb } from "./firebase.js";
 import { ref, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -7,58 +7,101 @@ let tempChartInstance = null;
 let moistChartInstance = null;
 let phChartInstance = null;
 
-// 🎯 ตัวแปรควบคุมการส่งแจ้งเตือน Telegram (ป้องกันการส่งย้ำๆ ทุกครั้งที่ค่าอัปเดต)
+// 🎯 ตัวแปรควบคุมการส่งแจ้งเตือน Telegram
 let isTempAlertSent = false; 
 
 checkUserLogin((userData) => {
     if (userData) {
         currentLoggedUid = userData.uid; 
-        document.getElementById("userNameText").innerText = userData.username;
+        const userNameEl = document.getElementById("userNameText");
+        if (userNameEl) userNameEl.innerText = userData.username;
 
         if (userData.role !== "admin") {
             const adminBtn = document.getElementById("adminMenuBtn");
             if (adminBtn) adminBtn.style.display = "none";
         }
 
-        // 1. ดักฟังค่าการ์ดเซนเซอร์ปัจจุบัน + แจ้งเตือน Telegram เมื่ออุณหภูมิสูงเกินไป
+        // 1. ดักฟังค่าเซนเซอร์ปัจจุบัน และสถานะปั๊ม/โหมด
         const currentSensorRef = ref(rtdb, `users_farms/${userData.uid}/current`);
         onValue(currentSensorRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 const temp = data.temp !== undefined ? data.temp : null;
 
-                document.getElementById("tempVal").innerText = temp !== null ? temp.toFixed(1) : "--";
-                document.getElementById("humidityVal").innerText = data.moist !== undefined ? data.moist.toFixed(1) : "--";
-                document.getElementById("phVal").innerText = data.ph !== undefined ? data.ph : "--";
+                const tempEl = document.getElementById("tempVal");
+                const humidEl = document.getElementById("humidityVal");
+                const phEl = document.getElementById("phVal");
+                const pumpStatusEl = document.getElementById("userPumpStatus");
 
-                const statusText = document.getElementById("userPumpStatus");
-                if (data.pump_status === true) {
-                    statusText.innerText = "🟢 บอร์ดทำงาน: เปิดปั๊มน้ำอยู่";
-                    statusText.style.color = "#10b981";
-                } else {
-                    statusText.innerText = "🔴 บอร์ดทำงาน: ปิดปั๊มน้ำอยู่";
-                    statusText.style.color = "#ef4444";
+                if (tempEl) tempEl.innerText = temp !== null ? temp.toFixed(1) : "--";
+                if (humidEl) humidEl.innerText = data.moist !== undefined ? data.moist.toFixed(1) : "--";
+                if (phEl) phEl.innerText = data.ph !== undefined ? data.ph : "--";
+
+                const isPumpOn = data.pump_status === true || data.pump === true;
+                if (pumpStatusEl) {
+                    if (isPumpOn) {
+                        pumpStatusEl.innerText = "🟢 บอร์ดทำงาน: เปิดปั๊มน้ำอยู่";
+                        pumpStatusEl.style.color = "#10b981";
+                    } else {
+                        pumpStatusEl.innerText = "🔴 บอร์ดทำงาน: ปิดปั๊มน้ำอยู่";
+                        pumpStatusEl.style.color = "#ef4444";
+                    }
                 }
 
-                // 📲 เช็กอุณหภูมิเพื่อยิงแจ้งเตือนเข้า Telegram
+                // 📲 แจ้งเตือนเมื่ออุณหภูมิสูงเกิน 32°C
                 if (temp !== null) {
                     if (temp >= 32.0 && !isTempAlertSent) {
-                        // แจ้งเตือนเมื่อร้อนเกิน 32°C (ตั้งค่าตัวเลขเกณฑ์อุณหภูมิได้ตามต้องการ)
                         sendTelegramNotification(
                             `🌡️ <b>[เตือนอุณหภูมิสูงเกินเกณฑ์!]</b>\n` +
                             `อุณหภูมิเบดดิ้งปัจจุบัน: <b>${temp.toFixed(1)} °C</b> ⚠️\n` +
                             `สภาพแวดล้อมเริ่มร้อนเกินไปสำหรับไส้เดือน AF กรุณาตรวจสอบหรือสั่งเปิดปั๊มพ่นหมอก`
                         );
-                        isTempAlertSent = true; // ล็อกไว้ไม่ให้ยิงข้อความรัว
+                        isTempAlertSent = true;
                     } else if (temp <= 30.0 && isTempAlertSent) {
-                        // ปลดล็อกเมื่ออุณหภูมิเย็นลงมาอยู่ในระดับปกติ (ต่ำกว่า 30°C)
                         isTempAlertSent = false; 
                     }
                 }
             }
         });
 
-        // 2. ดึง Log ย้อนหลังสแตนด์บายไว้ให้พร้อมวาดกราฟ
+        // 2. ดักฟังสถานะโหมด Auto / Manual (อัปเดตปุ่มและข้อความสถานะ)
+        const controlRef = ref(rtdb, `users_farms/${userData.uid}/controls`);
+        onValue(controlRef, (snapshot) => {
+            const controls = snapshot.val();
+            const autoStatusEl = document.getElementById("userAutoStatus");
+            const pumpOnBtn = document.getElementById("userPumpOnBtn");
+            const pumpOffBtn = document.getElementById("userPumpOffBtn");
+
+            const isAuto = controls && controls.auto_mode === true;
+
+            if (autoStatusEl) {
+                if (isAuto) {
+                    autoStatusEl.innerText = "⚙️ โหมด: Auto";
+                    autoStatusEl.style.color = "#2563eb";
+                    if (pumpOnBtn && pumpOffBtn) {
+                        pumpOnBtn.disabled = true;
+                        pumpOffBtn.disabled = true;
+                        pumpOnBtn.style.opacity = "0.4";
+                        pumpOffBtn.style.opacity = "0.4";
+                        pumpOnBtn.style.cursor = "not-allowed";
+                        pumpOffBtn.style.cursor = "not-allowed";
+                    }
+                } else {
+                    autoStatusEl.innerText = "✋ โหมด: Manual";
+                    autoStatusEl.style.color = "#64748b";
+                    if (pumpOnBtn && pumpOffBtn) {
+                        pumpOnBtn.disabled = false;
+                        pumpOffBtn.disabled = false;
+                        pumpOnBtn.style.opacity = "1";
+                        pumpOffBtn.style.opacity = "1";
+                        pumpOnBtn.style.cursor = "pointer";
+                        pumpOffBtn.style.cursor = "pointer";
+                    }
+                }
+            }
+        });
+
+        // 3. ดึง Log ย้อนหลังสแตนด์บายไว้วาดกราฟ
         startLoadingSensorCharts(userData.uid);
     }
 });
@@ -166,7 +209,15 @@ document.getElementById("clickTempCard")?.addEventListener("click", () => toggle
 document.getElementById("clickMoistCard")?.addEventListener("click", () => toggleChart('moist'));
 document.getElementById("clickPhCard")?.addEventListener("click", () => toggleChart('ph'));
 
-// 🎯 ปุ่มควบคุมปั๊ม (แจ้งเตือน Telegram อัตโนมัติจากใน sendUserControlCommand)
+// ⚙️ ผูกปุ่มคำสั่ง Auto Mode
+document.getElementById("userAutoOnBtn")?.addEventListener("click", async () => {
+    if (currentLoggedUid) await setUserAutoMode(currentLoggedUid, true);
+});
+document.getElementById("userAutoOffBtn")?.addEventListener("click", async () => {
+    if (currentLoggedUid) await setUserAutoMode(currentLoggedUid, false);
+});
+
+// 💧 ผูกปุ่มคำสั่ง Manual เปิด/ปิด ปั๊มน้ำ
 document.getElementById("userPumpOnBtn")?.addEventListener("click", async () => {
     if (currentLoggedUid) await sendUserControlCommand(currentLoggedUid, true);
 });
@@ -174,4 +225,5 @@ document.getElementById("userPumpOffBtn")?.addEventListener("click", async () =>
     if (currentLoggedUid) await sendUserControlCommand(currentLoggedUid, false);
 });
 
+// 🚪 ผูกปุ่มออกจากระบบ
 document.getElementById("logoutBtn")?.addEventListener("click", () => logoutUser());
