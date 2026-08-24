@@ -7,7 +7,7 @@ import { ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
 const TELEGRAM_TOKEN = "8989413719:AAEBlxePLJ03u9tmwxuXoc9QxMd7OyGL7ko";
 const TELEGRAM_CHAT_ID = "8683019575";
 
-// 🚀 ฟังก์ชันยิงข้อความเข้า Telegram
+// 🚀 ส่งแจ้งเตือน Telegram
 export async function sendTelegramNotification(message) {
     if (!TELEGRAM_TOKEN || !TELEGRAM_CHAT_ID) return;
     
@@ -28,7 +28,7 @@ export async function sendTelegramNotification(message) {
     }
 }
 
-// 🎯 ฟังก์ชันแสดง Custom Toast Alert ทรงแคปซูล
+// 🎯 แสดง Toast Alert
 export function showCustomAlert(message, type = "success", duration = 3000) {
     const alertBox = document.getElementById("customAlert");
     const alertMessage = document.getElementById("alertMessage");
@@ -54,7 +54,7 @@ export function showCustomAlert(message, type = "success", duration = 3000) {
     }
 }
 
-// 1. ฟังก์ชันคอยตรวจจับว่าผู้ใช้คนนี้ล็อกอินอยู่ไหม
+// 1. ตรวจสอบการล็อกอิน
 export function checkUserLogin(callback) {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -76,37 +76,33 @@ export function checkUserLogin(callback) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
       }
     } else {
-      console.log("ไม่ได้ล็อกอิน! กำลังเปลี่ยนเส้นทางไปหน้าเข้าสู่ระบบ...");
       window.location.href = "./login.html";
     }
   });
 }
 
-// 2. ฟังก์ชันสำหรับกดออกจากระบบ
+// 2. ออกจากระบบ
 export function logoutUser() {
   signOut(auth).then(() => {
     showCustomAlert("ออกจากระบบเรียบร้อยแล้ว!", "success");
-
     setTimeout(() => {
       window.location.href = "./login.html";
     }, 1200);
-
   }).catch((error) => {
     console.error("Logout Error:", error);
     showCustomAlert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "error");
   });
 }
 
-// 🚀 3. ฟังก์ชันสั่งงานปั๊มน้ำ (Manual) + แจ้งเตือน Telegram อัตโนมัติ
+// 🚀 3. สั่งงานปั๊มน้ำ (Manual) ชี้ไปที่ /users_farms/<UID>/controls
 export async function sendUserControlCommand(userUid, deviceState) {
   try {
     if (!userUid) return false;
 
-    // ชี้ตรงไปที่ UID Root path
-    const controlRef = ref(rtdb, `${userUid}/controls`);
+    const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
     await update(controlRef, {
-      auto_mode: false,         // ปิดระบบออโต้เมื่อกดสั่ง Manual
-      pump_command: deviceState // true = เปิด, false = ปิด
+      auto_mode: false,
+      pump_command: deviceState
     });
 
     const statusText = deviceState ? "<b>เปิดปั๊มน้ำพ่นหมอก (ON)</b> 🟢" : "<b>ปิดปั๊มน้ำพ่นหมอก (OFF)</b> 🔴";
@@ -119,13 +115,12 @@ export async function sendUserControlCommand(userUid, deviceState) {
   }
 }
 
-// ⚙️ 4. ฟังก์ชันสั่งเปิด/ปิด โหมดอัตโนมัติ (Auto Mode) + แจ้งเตือน Telegram
+// ⚙️ 4. สั่งเปิด/ปิด โหมดอัตโนมัติ (Auto Mode) ชี้ไปที่ /users_farms/<UID>/controls
 export async function setUserAutoMode(userUid, isAuto) {
   try {
     if (!userUid) return false;
 
-    // ชี้ตรงไปที่ UID Root path
-    const controlRef = ref(rtdb, `${userUid}/controls`);
+    const controlRef = ref(rtdb, `users_farms/${userUid}/controls`);
     await update(controlRef, {
       auto_mode: isAuto
     });

@@ -4,15 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Smart Earthworm Farm</title>
-    
-    <!-- นำเข้าไฟล์สไตล์ภายนอก -->
     <link rel="stylesheet" href="./css/dashboard.css">
 </head>
 <body>
 
 <nav class="navbar">
     <div class="nav-container">
-        <div class="nav-brand"> Smart Farm</div>
+        <div class="nav-brand">🌿 Smart Farm</div>
         
         <ul class="nav-menu">
             <li><a href="./dashboard.html" class="active">📊 หน้าหลัก</a></li>
@@ -23,7 +21,7 @@
 
         <div class="nav-user-zone">
             <a href="./profile.html" class="user-link-hover">
-                <span class="user-greeting">สวัสดี, <strong id="userNameText">โหลด..</strong> 👤</span>
+                <span class="user-greeting">สวัสดี, <strong id="userNameText">กำลังโหลด...</strong> 👤</span>
             </a>
             <button class="nav-logout-btn" id="logoutBtn">ออกจากระบบ</button>
         </div>
@@ -44,19 +42,17 @@
         </div>
         
         <div class="control-buttons-group">
-            <!-- โหมด Auto -->
             <button id="userAutoOnBtn" class="btn btn-auto-on">⚙️ เปิด Auto</button>
             <button id="userAutoOffBtn" class="btn btn-auto-off">✋ ปิด Auto</button>
             <span id="userAutoStatus" class="status-auto">โหมด: กำลังโหลด...</span>
 
-            <!-- โหมด Manual -->
             <button id="userPumpOnBtn" class="btn btn-pump-on">เปิดปั๊ม (ON)</button>
             <button id="userPumpOffBtn" class="btn btn-pump-off">ปิดปั๊ม (OFF)</button>
             <span id="userPumpStatus" class="status-pump">สถานะ: กำลังโหลด...</span>
         </div>
     </div>
 
-    <!-- การ์ดเซนเซอร์ 3 ใบ -->
+    <!-- การ์ดแสดงค่าเซนเซอร์ 3 ตัว -->
     <div class="grid">
         <div id="clickTempCard" class="card temp-color" title="คลิกเพื่อเปิด/ปิดกราฟอุณหภูมิ">
             <h3>อุณหภูมิ (Temperature) 👆</h3>
@@ -72,7 +68,7 @@
         </div>
     </div>
 
-    <!-- โซนแสดงผลกราฟ -->
+    <!-- โซนกราฟสถิติ -->
     <div id="chartsSection" class="charts-container">
         <div id="tempChartCard" class="chart-card">
             <h4>📈 สถิติตัวเลขภูมิอากาศ (อุณหภูมิ)</h4>
@@ -89,7 +85,7 @@
     </div>
 </div>
 
-<!-- ป๊อปอัพแจ้งเตือน Custom Alert -->
+<!-- Custom Toast Alert -->
 <div id="customAlert" class="custom-alert">
     <span id="alertIcon">🟢</span>
     <span id="alertMessage">ข้อความแจ้งเตือน</span>

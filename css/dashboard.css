@@ -1,4 +1,3 @@
-/* 🎨 คุมโทนสีและค่าพื้นฐานเดิม */
 :root {
     --bg-main: #f8fafc;
     --surface: #ffffff;
@@ -28,7 +27,6 @@ body {
     background-attachment: fixed;
 }
 
-/* 🚀 👑 ดีไซน์แถบเมนูบนสุดแบบโมเดิร์น (Navbar Style) */
 .navbar {
     background-color: #0f172a;
     color: white;
@@ -125,7 +123,6 @@ body {
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
-/* 🏢 ส่วนเนื้อหาคอนเทนเนอร์หลัก */
 .container { 
     max-width: 1100px; 
     margin: 40px auto; 
@@ -147,7 +144,6 @@ body {
     font-size: 15px;
 }
 
-/* 💧 แผงควบคุมระบบ Auto / Manual */
 .user-control-panel {
     background: var(--surface);
     padding: 25px;
@@ -214,7 +210,6 @@ body {
     font-size: 14px;
 }
 
-/* 📊 การ์ดเซนเซอร์ 3 ใบ */
 .grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
@@ -272,7 +267,6 @@ body {
 .ph-color::before { background-color: var(--color-ph); }
 .ph-color .value { color: var(--color-ph); }
 
-/* 📈 โซนกราฟสถิติ */
 .charts-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -304,7 +298,6 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* 🔔 Custom Toast Alert */
 .custom-alert {
     position: fixed;
     top: 25px;
@@ -353,7 +346,6 @@ body {
     transition: var(--transition);
 }
 
-/* 📱 Responsive สำหรับมือถือ */
 @media (max-width: 768px) {
     .nav-container {
         flex-direction: column;
