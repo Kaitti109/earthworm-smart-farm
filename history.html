@@ -10,7 +10,7 @@
 
 <nav class="navbar">
     <div class="nav-container">
-        <div class="nav-brand"> Smart Farm</div>
+        <div class="nav-brand">🌿 Smart Farm</div>
         <ul class="nav-menu">
             <li><a href="./dashboard.html">📊 หน้าหลัก</a></li>
             <li><a href="./history.html" class="active">📈 ประวัติย้อนหลัง</a></li>
@@ -29,10 +29,23 @@
 <div class="container">
     <div class="welcome-banner" style="margin-bottom: 25px;">
         <h2>📋 ตารางบันทึกประวัติข้อมูลเซนเซอร์</h2>
-        <p>แสดงรายการบันทึกย้อนหลัง 10 ครั้งล่าสุดจากระบบเซนเซอร์ฟาร์มไส้เดือน</p>
+        <p>เลือกวันที่เพื่อค้นหาและตรวจสอบบันทึกย้อนหลังของสภาพแวดล้อมในฟาร์มไส้เดือน</p>
     </div>
 
-    <!-- 📋 เหลือเฉพาะโซนตารางประวัติ -->
+    <!-- 📅 ส่วนตัวเลือกวันที่ (Filter Bar) -->
+    <div style="background: white; padding: 18px 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <label for="historyDateInput" style="font-weight: 600; color: #334155;">📅 เลือกวันที่:</label>
+            <input type="date" id="historyDateInput" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+            <button id="fetchHistoryBtn" style="background-color: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer;">🔍 ค้นหา</button>
+            <button id="todayHistoryBtn" style="background-color: #64748b; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;">วันนี้</button>
+        </div>
+        <div id="dataCountTag" style="background: #f1f5f9; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #475569;">
+            พบ 0 รายการ
+        </div>
+    </div>
+
+    <!-- 📋 ตารางประวัติข้อมูล -->
     <div class="history-container" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 20px;">
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
@@ -42,11 +55,12 @@
                         <th style="padding: 12px 16px; color: #ef4444; font-weight: 600;">🌡️ อุณหภูมิ (°C)</th>
                         <th style="padding: 12px 16px; color: #3b82f6; font-weight: 600;">💧 ความชื้น (%)</th>
                         <th style="padding: 12px 16px; color: #0d9488; font-weight: 600;">🧪 ค่าความเป็นกรด-ด่าง (pH)</th>
+                        <th style="padding: 12px 16px; color: #64748b; font-weight: 600;">⚙️ โหมด / สถานะปั๊ม</th>
                     </tr>
                 </thead>
                 <tbody id="historyTableBody">
                     <tr>
-                        <td colspan="4" style="padding: 20px; text-align: center; color: #94a3b8;">⏳ กำลังโหลดประวัติข้อมูล...</td>
+                        <td colspan="5" style="padding: 20px; text-align: center; color: #94a3b8;">⏳ กำลังโหลดประวัติข้อมูล...</td>
                     </tr>
                 </tbody>
             </table>
