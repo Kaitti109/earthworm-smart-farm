@@ -123,3 +123,27 @@ document.getElementById("historyDateInput")?.addEventListener("change", (e) => {
 });
 
 document.getElementById("logoutBtn")?.addEventListener("click", () => logoutUser());
+
+// ==========================================
+// ⏱️ ระบบนาฬิกาบอกเวลาปัจจุบัน (Live Clock)
+// ==========================================
+function updateLiveClock() {
+    const clockElement = document.getElementById("liveClock");
+    if (clockElement) {
+        const now = new Date();
+        // จัดรูปแบบให้เป็น ชั่วโมง:นาที:วินาที (เช่น 14:05:30)
+        const timeString = now.toLocaleTimeString('th-TH', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit' 
+        });
+        
+        clockElement.innerHTML = `⏱️ ${timeString} น.`;
+    }
+}
+
+// สั่งให้ฟังก์ชันทำงานทุกๆ 1000 มิลลิวินาที (1 วินาที)
+setInterval(updateLiveClock, 1000);
+
+// เรียกใช้ครั้งแรกทันทีตอนโหลดหน้าเว็บ
+updateLiveClock();
