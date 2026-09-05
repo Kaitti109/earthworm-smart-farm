@@ -1,3 +1,6 @@
+/* ==========================================
+   🌱 BASE & THEME VARIABLES (อิงจาก Dashboard)
+   ========================================== */
 :root {
     --bg-main: #f8fafc;
     --surface: #ffffff;
@@ -7,6 +10,7 @@
     --color-temp: #f97316;
     --color-humidity: #3b82f6;
     --color-ph: #10b981;
+    --brand-mint: #34d399;
     --border-radius: 12px;
     --shadow-soft: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.02);
     --transition: all 0.2s ease;
@@ -104,6 +108,21 @@ body {
 }
 .user-greeting strong {
     color: #34d399;
+}
+
+/* ⏱️ สไตล์สำหรับนาฬิกา (Live Clock) */
+.live-clock {
+    background-color: #0f172a; 
+    color: #34d399; 
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    letter-spacing: 1px;
+    border: 1px solid rgba(52, 211, 153, 0.2);
 }
 
 .nav-logout-btn {
