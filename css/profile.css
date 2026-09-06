@@ -35,7 +35,54 @@
     font-weight: 700;
 }
 
-/* ป้ายระดับสิทธิ์สิทธิ์ */
+/* =========================================
+   ส่วนตกแต่งเพิ่มเติมสำหรับการแก้ไขชื่อ
+========================================= */
+.edit-name-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.edit-input {
+    padding: 6px 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    width: 200px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.edit-input:focus {
+    border-color: #2563eb; /* เปลี่ยนให้สีเข้ากับโทนของเว็บ (สีน้ำเงิน) */
+}
+
+.btn-icon {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-icon:hover {
+    background: #e2e8f0;
+    transform: scale(1.1);
+}
+
+/* ป้ายระดับสิทธิ์ */
 .badge {
     background-color: #e2e8f0;
     color: #475569;

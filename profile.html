@@ -31,7 +31,16 @@
     <div class="profile-card">
         <div class="profile-header">
             <div class="avatar-icon">👤</div>
-            <h2 id="profileUsername">กำลังโหลด...</h2>
+            
+            <!-- ส่วนแสดงและแก้ไขชื่อ -->
+            <div class="edit-name-container">
+                <h2 id="profileUsername">กำลังโหลด...</h2>
+                <input type="text" id="editNameInput" class="edit-input" style="display: none;" placeholder="กรอกชื่อใหม่">
+                
+                <button id="editNameBtn" class="btn-icon" title="แก้ไขชื่อ">✏️</button>
+                <button id="saveNameBtn" class="btn-icon" style="display: none;" title="บันทึก">💾</button>
+            </div>
+
             <span id="profileRole" class="badge">User</span>
         </div>
         
